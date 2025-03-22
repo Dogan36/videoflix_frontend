@@ -1,0 +1,28 @@
+.header {
+  position: fixed;  /* Fixiert den Header oben */
+  top: 0;  /* Startet am oberen Rand */
+  left: 0;  /* Deckt die ganze Breite ab */
+  width: 100%;  /* 100% der Breite */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Stellt sicher, dass er über allem liegt */
+  }
+
+.headerContent{
+  width: 100%;
+  max-width: 1280px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  color: var(--text-color);
+}
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: red;
+  }
+  
+  

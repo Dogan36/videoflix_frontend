@@ -1,0 +1,120 @@
+*{
+  box-sizing: border-box;
+
+}
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  --primary-color: #2E3EDF; /* Lila für das Logo */
+  --background-color: #000000; /* Schwarzer Hintergrund */
+  --text-color: #ffffff; /* Weißer Text */
+  --button-bg-disabled: /* Blau für Buttons */
+  --button-hover-bg: #1c7ed6; /* Dunkleres Blau beim Hover */
+  --error-color: #FF002E;
+  ; /* Rote Fehlernachrichten */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  width: 100%;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-family: dm-sans, sans-serif;
+  color: var(--text-color, #ffffff);
+  letter-spacing: 0;
+  margin: 0;
+}
+
+button {
+  background: var(--primary-color, #2E3EDF); /* Standard: Blau */
+  color: var(--text-color, #ffffff); /* Weißer Text */
+  padding: 12px 24px;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 18px;
+  gap: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+button:hover {
+  background: var(--button-hover-bg, #1c7ed6); /* Dunkleres Blau */
+}
+
+input {
+  width: 360px;
+  max-width: 100%;
+  padding: 12px 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 18px;
+  background: none;
+  &::placeholder {
+    color: #e0e0e0;
+  }
+  
+}
+
+.formHeader{
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0%;
+  color: var(--primary-color);
+}
+
+.noButton{
+  all: unset;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 700;
+  transition: all 0.3s ease;
+  &:hover{
+    background: unset;
+    scale: 1.1;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

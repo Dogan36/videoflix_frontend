@@ -1,0 +1,66 @@
+.container {
+    width: 520px;
+    max-width: 95vw;
+    gap: 32px;
+    padding: 43px clamp(24px, 5vw, 56px);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 48px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    color: black;
+    transition: all 3s ease;
+
+}
+
+.loginInput {
+    border: 1px solid var(--primary-color);
+    background: none;
+    color: var(--primary-color);
+    &:focus-visible {
+        outline: 1px solid var(--primary-color);
+    }
+    &::placeholder {
+        color: var(--primary-color)
+    }
+}
+
+.inputWrapper{
+    position: relative;
+    width: 360px;
+    max-width: 100%;
+}
+.inputWrapper input{
+       
+        padding-right: 3rem; /* Platz für das Icon */
+      
+}
+.toggleIcon{
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.formLastChild{
+    display: flex;
+    gap: 24px;
+}
+
+.errorWrapper {
+    margin-top: -30px;
+    margin-bottom: -24px;
+    display: flex;
+    align-items: center;
+    width: 360px;
+    max-width: 100%;
+    color: var(--error-color);
+    text-align: left;
+    font-size: 15px;
+    gap: 4px;
+  }
+
+   
