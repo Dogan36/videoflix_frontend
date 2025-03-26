@@ -1,5 +1,5 @@
 .header {
-  position: fixed;  /* Fixiert den Header oben */
+  position: absolute;  /* Fixiert den Header oben */
   top: 0;  /* Startet am oberen Rand */
   left: 0;  /* Deckt die ganze Breite ab */
   width: 100%;  /* 100% der Breite */
@@ -17,12 +17,28 @@
   align-items: center;
   padding: 1rem 2rem;
   color: var(--text-color);
+
 }
   
   .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: red;
+   height: 48px;
+    
   }
   
+
+  .logoContainer{
+    display: flex;
+    align-items: center;
+    gap : 10px;
+  }
+
+  .backArrow{
+    height: 48px;
+    width: 48px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover{
+      scale: 1.1;
+    }
+  }
   

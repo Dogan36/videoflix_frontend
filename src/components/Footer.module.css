@@ -1,27 +1,30 @@
 .footer {
-    position: absolute;
-    left: 0;
-    bottom: 1rem;
+    display: flex;
     width: 100%;
     text-align: center;
+    justify-content: center;
+    align-items: center;
     
   }
+.footerLogin{
+  position:absolute;
+  bottom:0;
+}
 
   .footerContent {
+    width: 100%;
+    max-width: 1280px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 1rem 2rem;
-    color: var(--text-color);
-    color: gray;
-    font-size: 0.875rem;
+    gap: 10px;
   }
   
-  .footerHome {
-    text-align: right;
-    padding-right: 2rem;
+  .footerContentHome {
+   justify-content: end;
   }
   
-  .footerLogin {
-    text-align: center;
+  .footerContentLogin {
+    justify-content: center;
   }

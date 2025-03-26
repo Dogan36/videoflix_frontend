@@ -1,0 +1,33 @@
+.playerWrapper {
+    padding-top: 56.25%; /* 16:9 */
+    width: 100%;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+  
+  .reactPlayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+  height: 100% !important;
+    object-fit: cover !important;
+  }
+  
+  .videoTitle {
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  
+  .videoTitle.hidden {
+    opacity: 0;
+  }
+  

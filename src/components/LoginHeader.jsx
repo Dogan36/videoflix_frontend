@@ -1,12 +1,12 @@
 import styles from "./Header.module.css";
-import { Link } from "react-router-dom";
 
-function LoginHeader() {
+function LoginHeader({step, setStep}) {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
       <h1 className={styles.logo}>VIDEOFLIX</h1>
-      <button>Log In</button>
+      {step !== "login" &&
+      <button onClick={()=>setStep("login")}>Log In</button>}
       </div>
     </header>
   );

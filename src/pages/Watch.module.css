@@ -1,0 +1,49 @@
+.videoWrapper {
+    position: relative;
+    height: 100vh;
+    background-color: black;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: black;
+    
+  }
+  
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1rem 2rem;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+    color: white;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+    justify-content: space-between;
+  }
+  
+  .hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  ._backArrow_1fyhk_69 {
+    &:hover {
+        scale: 1.1;
+    }
+}
+
+
+.backArrow {
+    height: 48px;
+    width: 48px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.backArrow:hover {
+    scale: 1.1;
+}
+  

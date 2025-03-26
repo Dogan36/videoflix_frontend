@@ -1,0 +1,15 @@
+.legalNotice{
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 20px;
+    margin-top: 80px;
+}
+
+header{
+    font-size: 32px;
+    font-weight: 700;
+}
+
+ul{
+    list-style-position: inside;
+}

@@ -4,6 +4,7 @@ import LoginStart from "../components/LoginStart";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 import styles from "./Login.module.css";
+
 function Login() {
   const [step, setStep] = useState("start");
   const backgroundImage = {
@@ -14,12 +15,13 @@ function Login() {
   };
   return (
     <>
-      <LoginHeader />
+      <LoginHeader step={step} setStep={setStep} />
       <div className={styles.parent} style={{ backgroundImage: backgroundImage[step] }}>
         {step === "start" && <LoginStart setStep={setStep} />}
         {step === "login" && <LoginForm setStep={setStep} />}
         {step === "signup" && <SignupForm setStep={setStep} />}
       </div>
+      <Footer />
     </>
   );
 }
