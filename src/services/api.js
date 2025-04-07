@@ -73,33 +73,11 @@ export async function getData(endpoint) {
     }
 }
 
-export async function postData(endpoint, data) {
-    try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            method: 'POST',
-            headers: createHeaders(),
-            body: data
-        });
-        const responseData = await response.json();
-
-        return {
-            ok: response.ok,
-            status: response.status,
-            data: responseData
-        };
-        
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
-        return {
-            ok:false,
-            status: 'error',
-            message: errorMessage
-        };
-    }
-}
 
 export async function postDataWJSON(endpoint, data) {
     console.log(data);
+    console.log(endpoint);
+    
     let header = createHeaders();
     header['Content-Type'] = 'application/json';
     try {
@@ -126,60 +104,7 @@ export async function postDataWJSON(endpoint, data) {
     }
 }
 
-export async function patchDataWoFiles(endpoint, data) {
-    let header = createHeaders();
-    header['Content-Type'] = 'application/json';
-    try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            method: 'PATCH',
-            headers: header,
-            body: JSON.stringify(data)
-        });
 
-        const responseData = await response.json();
-        return {
-            ok: response.ok,
-            status: response.status,
-            data: responseData
-        };
-
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
-        return {
-            ok:false,
-            status: 'error',
-            message: errorMessage
-        };
-    }
-}
-
-export async function patchData(endpoint, formData) {
-
-    const headers = createHeaders();
-
-    try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            method: 'PATCH',
-            headers: headers,
-            body: formData
-        });
-
-        const responseData = await response.json();
-        return {
-            ok: response.ok,
-            status: response.status,
-            data: responseData
-        };
-
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
-        return {
-            ok:false,
-            status: 'error',
-            message: errorMessage
-        };
-    }
-}
 
 export async function deleteData(endpoint) {
     try {

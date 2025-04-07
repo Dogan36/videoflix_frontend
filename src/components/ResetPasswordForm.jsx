@@ -3,45 +3,37 @@ import eyeOpen from "@/assets/visibility.svg";
 import eyeClosed from "@/assets/visibility_off.svg";
 import { useState } from "react";
 import warning from "@/assets/warning.svg";
-import { validateEmail, validatePassword, validatePasswordRepeat } from "@/utils/formvalidation";
-import { handleRegistration } from "../services/authHelpers";
+import {  validatePassword, validatePasswordRepeat } from "@/utils/formvalidation";
+import { handleReset } from "../services/authHelpers";
 
-function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonAction, setToastButtonText, setToastType }) {
+function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
   const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
-  const [emailError, setEmailError] = useState("");
+
   const [passwordError, setPasswordError] = useState("");
   const [passwordRepeatError, setPasswordRepeatError] = useState("");
   
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    const emailErr = validateEmail(email);
+
     const passwordErr = validatePassword(password);
     const passwordRepeatErr = validatePasswordRepeat(password, passwordRepeat);
-
-    setEmailError(emailErr);
+    
     setPasswordError(passwordErr);
     setPasswordRepeatError(passwordRepeatErr);
   
-    if (emailErr || passwordErr || passwordRepeatErr) return;
-      handleRegistration({ email, password, passwordRepeat, setStep, setToastMessage, setToastButtonAction, setToastButtonText, setToastType  });
+    if (passwordErr || passwordRepeatErr) return;
+      handleReset({password, passwordRepeat, setPasswordError, setPasswordRepeatError });
   };
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
-      <span className="formHeader">Sign Up</span>
-      <input
-        className={styles.loginInput}
-        type="email"
-        placeholder="Email Address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      {emailError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{emailError}</span></div>}
+      <span className="formHeader">Reset password</span>
+      <span className="formSubheader">Create a new password for your <span style={{color: "var(--primary-color)"}}>Videoflix</span> account.</span>
+      
       <div className={styles.inputWrapper}>
         <input
           className={styles.loginInput}
@@ -76,9 +68,9 @@ function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonA
       </div>
       {passwordRepeatError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{passwordRepeatError}</span></div>}
       
-      <button onClick={handleSubmit}>Get Started</button>
+      <button onClick={handleSubmit}>Reset my password</button>
     </form>
   );
 }
 
-export default SignupForm;
+export default ResetPasswordForm;

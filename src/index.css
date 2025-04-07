@@ -96,6 +96,11 @@ input {
   color: var(--primary-color);
 }
 
+.formSubheader{
+  font: size 18px;
+  text-align: center;
+}
+
 .noButton{
   all: unset;
   cursor: pointer;

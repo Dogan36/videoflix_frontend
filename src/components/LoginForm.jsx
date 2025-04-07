@@ -4,9 +4,8 @@ import eyeClosed from "@/assets/visibility_off.svg";
 import warning from "@/assets/warning.svg";
 import { useState } from "react";
 import { validateEmail, validatePassword } from "@/utils/formvalidation";
-
-function LoginForm({ setStep }) {
-  const [email, setEmail] = useState("");
+function LoginForm({ setStep, email, setEmail }) {
+  
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
@@ -32,7 +31,7 @@ function LoginForm({ setStep }) {
 
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
-      <span class="formHeader">Log In</span>
+      <span className="formHeader">Log In</span>
       <input
         className={styles.loginInput}
         type="email"
@@ -60,7 +59,7 @@ function LoginForm({ setStep }) {
       </div>
       {passwordError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{passwordError}</span></div>}
       <button type="submit">Log in</button>
-      <button className="noButton">Forgot Password?</button>
+      <button onClick={() => setStep("forgot")} className="noButton">Forgot Password?</button>
       <div className={styles.formLastChild}>
         <span>New to Videoflix?</span>
         <button className="noButton" onClick={() => setStep("signup")}>

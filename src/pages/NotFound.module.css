@@ -10,27 +10,8 @@
     text-align: center;
   }
   
-  h1 {
-    font-size: 8rem;
-    margin: 0;
-  }
   
-  p {
-    font-size: 1.5rem;
-    margin: 1rem 0 2rem;
-  }
-  
-  .button {
-    padding: 0.75rem 2rem;
-    
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 1rem;
-    text-decoration: none;
-    transition: background-color 0.2s ease-in-out;
-  }
+ 
   
   
   
