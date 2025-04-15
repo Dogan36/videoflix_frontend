@@ -13,12 +13,10 @@ export function removeAuthCredentials() {
 }
 
 export function getAuthToken() {
-    return localStorage.getItem('auth-token');
-}
-
-export function getAuthUser() {
     return localStorage.getItem('auth-user');
 }
+
+
 
 export function getAuthUserId() {
     return localStorage.getItem('auth-user-id');
@@ -29,10 +27,11 @@ function createHeaders() {
     const headers = {};
 
     const token = getAuthToken();
+    console.log(token)
     if (token) {
         headers['Authorization'] = `Token ${token}`;
     }
-
+    console.log(headers)
     return headers;
 }
 
@@ -51,6 +50,8 @@ function getErrorMessage(error) {
 }
 
 export async function getData(endpoint) {
+    console.log(endpoint)
+    console.log(createHeaders())
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'GET',

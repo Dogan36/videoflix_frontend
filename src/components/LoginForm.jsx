@@ -2,8 +2,10 @@ import styles from "./LoginForm.module.css";
 import eyeOpen from "@/assets/visibility.svg";
 import eyeClosed from "@/assets/visibility_off.svg";
 import warning from "@/assets/warning.svg";
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { validateEmail, validatePassword } from "@/utils/formvalidation";
+import { handleLogin } from "@/services/authHelpers";
 function LoginForm({ setStep, email, setEmail }) {
   
   const [password, setPassword] = useState("")
@@ -11,7 +13,7 @@ function LoginForm({ setStep, email, setEmail }) {
   const togglePassword = () => setShowPassword(!showPassword);
   const [emailError, setEmailError] = useState();
   const [passwordError, setPasswordError] = useState();
-  
+  const navigate = useNavigate();
   
 
   const handleSubmit = (e) => {
@@ -25,8 +27,22 @@ function LoginForm({ setStep, email, setEmail }) {
   
     if (emailErr || passwordErr) return;
   
-    // ✅ Wenn alles ok ist → Submit
-    console.log("Logging in with:", { email, password });
+    handleLogin({
+      email,
+      password,
+      setStep,
+      setEmailError,
+      setPasswordError,
+      setEmail,
+      setPassword,
+      setToastMessage: () => {},
+      setToastButtonAction: () => {},
+      setToastButtonText: () => {},
+      setToastType: () => {},
+      setShowToast: () => {},
+      navigate
+    });
+    
   };
 
   return (

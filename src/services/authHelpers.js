@@ -22,7 +22,7 @@ export async function handleRegistration({
     if (res.ok) {
       setToastType("success");
       setToastMessage("Registrierung erfolgreich! Bitte überprüfe deine E-Mails.");
-      setToastButtonText("Zum Login");
+      setToastButtonText("Log in");
       setToastButtonAction(() => () => setStep("login"));
       setShowToast(true);
       return;
@@ -67,9 +67,9 @@ export async function handleLogin({
   setToastButtonText,
   setToastType,
   setShowToast,
-  navigateHook,
+  navigate,
 }) {
-  navigate = navigateHook();
+ 
   try {
     const res = await postDataWJSON("users/login/", {
       email,
@@ -80,7 +80,7 @@ export async function handleLogin({
       console.log("✅ Login erfolgreich", res.data);
       localStorage.setItem("auth-user", res.data.token);
       localStorage.setItem("auth-user-id", res.data.user_id);
-      navigate("/"); // Redirect to home page or dashboard
+      navigate("/"); // Navigiere direkt
 
     } else {
       // Fehlerhafte Logindaten → Backend-Fehler auswerten
@@ -118,6 +118,62 @@ export async function handleLogin({
   }
 }
 
-export async function handleReset(){
-    console.log("Reset Password")
+export async function handleForgot({
+  email,
+  setStep,
+  setToastMessage,
+  setToastButtonAction,
+  setToastButtonText,
+  setToastType,
+  setShowToast,
+  navigateHook
+}) {
+  navigate = navigateHook();
+  try {
+    const res = await postDataWJSON("users/reset_password/", {
+      email,
+    });
+
+    if (res.ok) {
+      setToastMessage("E-Mail zum Zurücksetzen des Passworts gesendet.");
+      setToastButtonText("Login");
+      setToastButtonAction(() => () => {
+        setStep("login");
+        navigate("/login"); // Redirect to login page
+      });
+      setToastType("success");
+      setShowToast(true);
+    } else {
+      // Fehlerhafte Logindaten → Backend-Fehler auswerten
+      if (!res.ok) {      
+        if (res.status === 404) {
+          setToastMessage("Diese E-Mail ist nicht registriert.");
+          setToastButtonText("Sign Up");
+          setToastButtonAction(() => () => {
+            setStep("signup");
+          });
+          setToastType("error");
+          setShowToast(true);
+          return;
+        }
+
+        // Allgemeiner Fehler
+        setToastMessage("Fehler beim Zurücksetzen des Passworts. Bitte überprüfe deine Eingaben.");
+
+        setToastType("error");
+        setShowToast(true);
+      }
+    }
+  } catch (err) {
+    console.error("❌ Netzwerkfehler:", err);
+    setToastMessage("Netzwerkfehler. Bitte versuche es erneut.");
+    setToastType("error");
+    setShowToast(true);
+  }
 }
+
+export async function handleReset(){
+  return
+}
+
+

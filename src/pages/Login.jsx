@@ -58,7 +58,8 @@ function Login() {
           setToastButtonText={setToastButtonText} />
         )}
         {step === "signup" && (
-          <SignupForm setStep={setStep}
+          <SignupForm
+          setStep={setStep}
           email={email} 
           setEmail={setEmail} 
           setShowToast={setShowToast} 
@@ -67,7 +68,14 @@ function Login() {
           setToastButtonText={setToastButtonText} />
         )}
         {step === "forgot" && (
-          <ForgotForm setStep={setStep} email={email} setEmail={setEmail} />
+          <ForgotForm
+          setStep={setStep}
+          email={email} 
+          setEmail={setEmail} 
+          setShowToast={setShowToast} 
+          setToastMessage={setToastMessage} 
+          setToastButtonAction={setToastButtonAction} 
+          setToastButtonText={setToastButtonText} />
         )}
       </div>
       <Footer />

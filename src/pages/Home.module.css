@@ -6,7 +6,8 @@
     color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;}
+    align-items: center;
+}
 
 .moviesContent{
     display: flex;
@@ -17,7 +18,7 @@
     z-index: 2;
     gap: 48px;
     padding: 1rem 2rem;
-    margin-top: -230px;
+    margin-top: -10vh;
 }
 .movieRow{
     display: flex;
@@ -49,10 +50,23 @@
     object-fit: contain;
 }
 
-@media screen and (max-width: 768px){
+.loading{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    height: 50px;
+}
+
+@media screen and (max-width: 768px) and (orientation: portrait){
     .moviesContent{
-        margin-top: 80px;
+        margin-top: 50px;
     }
-   
-    
+}
+
+@media screen and (max-width: 768px) and (orientation: landscape){
+    .moviesContent{
+        margin-top: 0;
+    }
 }

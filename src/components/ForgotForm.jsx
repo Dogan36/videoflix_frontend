@@ -2,15 +2,12 @@ import styles from "./LoginForm.module.css";
 import warning from "@/assets/warning.svg";
 import { useState } from "react";
 import { validateEmail} from "@/utils/formvalidation";
-
-function ForgotForm({email, setEmail }) {
+import { handleForgot } from "../services/authHelpers";
+function ForgotForm({email, setEmail, setToastMessage, setToastButtonAction, setToastButtonText, setToastType}) {
   
 
   const [emailError, setEmailError] = useState();
  
-  
-  
-
   const handleSubmit = (e) => {
     e.preventDefault();
   
@@ -21,9 +18,7 @@ function ForgotForm({email, setEmail }) {
    
   
     if (emailErr) return;
-  
-    // ✅ Wenn alles ok ist → Submit
-    console.log("submit in with:", { email});
+    handleForgot({email, setToastMessage, setToastButtonAction, setToastButtonText, setToastType });
   };
 
   return (

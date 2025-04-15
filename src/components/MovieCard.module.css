@@ -1,0 +1,7 @@
+
+.movieCard img {
+    height: 120px;
+    width: 215px;
+    object-fit: contain;
+    cursor: pointer;
+}

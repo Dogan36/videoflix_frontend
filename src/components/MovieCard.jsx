@@ -1,7 +1,9 @@
+import styles from './MovieCard.module.css';
+
 function MovieCard({ movie, onClick }) {
-    console.log(movie);
+    
     return (
-      <div className="movieCard" onClick={() => onClick(movie)}>
+      <div className={styles.movieCard} onClick={onClick}>
         <img src={movie.thumbnail} alt={movie.title} />
         <h4>{movie.title}</h4>
       </div>
