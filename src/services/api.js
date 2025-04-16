@@ -25,13 +25,10 @@ export function getAuthUserId() {
 
 function createHeaders() {
     const headers = {};
-
     const token = getAuthToken();
-    console.log(token)
     if (token) {
         headers['Authorization'] = `Token ${token}`;
     }
-    console.log(headers)
     return headers;
 }
 
@@ -49,11 +46,20 @@ function getErrorMessage(error) {
     return errorMessage;
 }
 
-export async function getData(endpoint) {
+export async function getData(endpoint, params = {}) {
+    console.log(params)
     console.log(endpoint)
-    console.log(createHeaders())
+    console.log(createHeaders());
+    let url = (`${API_BASE_URL}${endpoint}`);
+    console.log(url);
+    if (Object.keys(params).length > 0) {
+        const queryString = new URLSearchParams(params).toString();
+        // Falls die URL bereits ein "?" enthält, füge mit "&" an, sonst mit "?"
+        url += (url.includes('?') ? '&' : '?') + queryString;
+        console.log(url);
+    }
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        const response = await fetch(url, {
             method: 'GET',
             headers: createHeaders(),
         });

@@ -6,15 +6,13 @@ function HeroSection({ movie}) {
       window.location.href = `/watch/${movie.id}`;
     };
   }
-  if (!movie) {
-    return null; // Return null if no movie is provided
-  }
+  
 
   return (
     <div className={styles.hero}>
       <div className={styles.videoContainer}>
-      <video key={movie.trailer} autoPlay loop muted playsInline className={styles.backgroundVideo}>
-        {movie?.trailer && <source src={movie.trailer} type="video/mp4" />}
+      <video key={movie?.trailer} autoPlay loop muted playsInline className={styles.backgroundVideo}>
+        {movie?.trailer && <source src={movie?.trailer} type="video/mp4" />}
         Your browser does not support the video tag.
       </video>
       </div>
