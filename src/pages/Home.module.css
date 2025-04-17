@@ -67,6 +67,6 @@
 
 @media screen and (max-width: 768px) and (orientation: landscape){
     .moviesContent{
-        margin-top: 0;
+        margin-top: 50px;
     }
 }

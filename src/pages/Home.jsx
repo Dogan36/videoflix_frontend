@@ -14,7 +14,7 @@ function Home() {
   const [categories, setCategories] = useState([]); // Kategorien erwarten wir als Array, in dem jedes Element ein Objekt mit { category, results, next, ... } ist
   const [activeMovie, setActiveMovie] = useState(null);
   const [featuredMovie, setFeaturedMovie] = useState(null);
-
+  const resetActiveMovie = () => setActiveMovie(null);
   function updateActiveMovie(movie) {
     setActiveMovie(movie);
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -47,9 +47,9 @@ function Home() {
 
   return (
     <>
-      <HomeHeader />
+      <HomeHeader  onResetActiveMovie={resetActiveMovie} />
       <div className={styles.home}>
-        {!isMobile && <HeroSection movie={activeMovie || featuredMovie} />}
+        {(!isMobile || activeMovie) && <HeroSection movie={activeMovie || featuredMovie} />}
         <div className={styles.moviesContent}>
           {/* Newest Movies */}
           { newest &&  newest.length > 0 && (

@@ -1,130 +1,97 @@
+import React, { useState, useEffect} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import VideoPlayer from "../components/VideoPlayer";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { getData } from "../services/api";
 import styles from "./Watch.module.css";
 import backArrow from "@/assets/arrow_back.svg";
 import logo from "@/assets/logo.svg";
-import { getData } from "../services/api";
-function Watch() {
-  const [showHeader, setShowHeader] = useState(true);
+import { API_BASE_URL } from "@/config";
+export default function Watch() {
   const navigate = useNavigate();
-  const movieId = window.location.pathname.split("/").pop();
-  const [movie, setMovie] = useState({});
-  const [videoUrl, setVideoUrl] = useState(null);
-  const [videoResolution, setVideoResolution] = useState(null);
+  const movieId = useParams().movieId
 
-  const handleBack = () => {
+  const [showHeader, setShowHeader] = useState(true);
+  const [movie, setMovie] = useState(null);
+  const [videoResolution, setVideoResolution] = useState(getVideoResolution());
+  const [videoUrl, setVideoUrl] = useState("");
+
+  const handleBack = React.useCallback(() => {
     navigate("/");
-  };
-
-  useEffect(() => {
-    const resolution = getVideoResolution();
-    setVideoResolution(resolution);
-
-    const getVideoSourceForUser = (movie) => {
-      const resolution = getVideoResolution();
-      console.log("Video resolution:", resolution);
-      switch (resolution) {
-        case 120:
-          return movie.video_120p;
-        case 360:
-          return movie.video_360p;
-        case 720:
-          return movie.video_720p;
-        case 1080:
-          return movie.video_1080p;
-        default:
-          return movie.video_360p; // Fallback
-      }
-    };
-
-    const videoSource = getVideoSourceForUser(movie);
-    setVideoUrl(videoSource);
-  }, [movie]); // Dieser Effekt läuft, wenn sich 'movie' ändert
-  
-  useEffect(() => {
-    console.log("Video URL:", videoUrl);
-    console.log("Video Resolution:", videoResolution);
-  }, [videoUrl, videoResolution]); // Dieser Effekt läuft, wenn sich 'videoUrl' ändert
+  }, [navigate]);
 
   function getVideoResolution() {
-    const width = window.innerWidth; // oder window.screen.width
-    if (width <= 480) {
-      return 120; // sehr kleine Geräte
-    } else if (width <= 720) {
-      return 360; // z.B. Smartphones in Hochformat
-    } else if (width <= 1080) {
-      return 720; // Tablets oder kleinere Desktops
-    } else {
-      return 1080; // Große Desktops
-    }
+    const w = window.innerWidth;
+    if (w <= 480) return 120;
+    if (w <= 720) return 360;
+    if (w <= 1080) return 720;
+    return 1080;
   }
 
-
+  // a) JSON‑Meta laden
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        handleBack();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  });
-
-  useEffect(() => {
-    async function fetchMovie() {
-      const res = await getData(`movies/${movieId}/`);
-      console.log("Response:", res);
-      if (res.ok) {
-        setMovie(res.data); // Setze den Film in den State
-      } else {
-        console.error("❌ Fehler beim Laden des Films:", res.message);
-      }
+    async function fetchMeta() {
+      const { ok, data } = await getData(`movies/${movieId}/`);
+      console.log("Meta:", ok, data);
+      if (ok) setMovie(data);
+      else console.error("Meta‑Error:", data?.message);
     }
-    fetchMovie();
-  }
-  , [movieId]); // Fetch movie data when the component mounts or when movieId changes
-  
+    fetchMeta();
+  }, [movieId]);
 
+  // b) Stream‑URL setzen
+  useEffect(() => {
+    if (!movie) return;
+    const url = `${API_BASE_URL}movies/${movieId}/stream/?resolution=${videoResolution}`;
+    console.log("Video‑URL:", url);
+    setVideoUrl(url);
+  }, [movie, videoResolution, movieId]);
+
+  // Escape‑Key
+  useEffect(() => {
+    const onKey = e => e.key === "Escape" && handleBack();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [handleBack]);
+
+  // Header autohide
   useEffect(() => {
     let timeout;
-    const handleMouseMove = () => {
+    const onMove = () => {
       setShowHeader(true);
       clearTimeout(timeout);
       timeout = setTimeout(() => setShowHeader(false), 1000);
     };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
+    window.addEventListener("mousemove", onMove);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousemove", onMove);
       clearTimeout(timeout);
     };
   }, []);
+
+  if (!movie) return <div className={styles.loader}>Lade Film …</div>;
 
   return (
     <div className={styles.videoWrapper}>
       <div className={`${styles.header} ${!showHeader ? styles.hidden : ""}`}>
         <img
           src={backArrow}
-          alt="Back"
+          alt="Zurück"
           className={styles.backArrow}
           onClick={handleBack}
         />
-        <img src={logo} alt="" />
+        <div className={styles.title}>{movie.title}</div>
+        <img src={logo} alt="Logo" className={styles.logo} />
       </div>
+
       <VideoPlayer
         videoUrl={videoUrl}
-        title={movie.title}
         showUI={showHeader}
-        autostart={true}
+        currentResolution={videoResolution}
+        onResolutionChange={setVideoResolution}
+        availableResolutions={[120, 360, 720, 1080]}
+        autostart={true}   
+        
       />
     </div>
   );
 }
-
-export default Watch;

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import arrow_back from "@/assets/arrow_back.svg";
 import logo from "@/assets/logo.svg";
 import logoText from "@/assets/logoText.svg";
-function HomeHeader() {
+function HomeHeader({ onResetActiveMovie }) {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
@@ -13,7 +13,8 @@ function HomeHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        <div className={styles.logoContainer}>
+        <div className={styles.logoContainer} 
+        onClick={onResetActiveMovie}>
           <img className={styles.logo} src={logo} alt="" />
           {!isHome && <img src={logoText} alt="" />}
         </div>

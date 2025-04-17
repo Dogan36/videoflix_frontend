@@ -46,40 +46,50 @@ function getErrorMessage(error) {
     return errorMessage;
 }
 
+
 export async function getData(endpoint, params = {}) {
-    console.log(params)
-    console.log(endpoint)
-    console.log(createHeaders());
-    let url = (`${API_BASE_URL}${endpoint}`);
-    console.log(url);
-    if (Object.keys(params).length > 0) {
-        const queryString = new URLSearchParams(params).toString();
-        // Falls die URL bereits ein "?" enthält, füge mit "&" an, sonst mit "?"
-        url += (url.includes('?') ? '&' : '?') + queryString;
-        console.log(url);
-    }
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: createHeaders(),
-        });
-        const responseData = await response.json();
-        return {
-            ok: response.ok,
-            status: response.status,
-            data: responseData
-        };
+  // Query-String anhängen
+  let url = `${API_BASE_URL}${endpoint}`;
+  console.log(endpoint);
+  console.log(params);
+  console.log(url);
+  if (Object.keys(params).length) {
+    const qs = new URLSearchParams(params).toString();
+    url += url.includes("?") ? "&" : "?" + qs;
+  }
 
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
-        return {
-            ok:false,
-            status: 'error',
-            message: errorMessage
-        };
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: createHeaders(),
+    });
+
+    // Content-Type prüfen
+    const contentType = response.headers.get("content-type") || "";
+    let data;
+
+    if (contentType.includes("application/json")) {
+      data = await response.json();
+    } else if (contentType.startsWith("video/") || contentType.includes("octet-stream")) {
+      data = await response.blob();
+    } else {
+      data = await response.text();
     }
+
+    return {
+      ok: response.ok,
+      status: response.status,
+      data,
+      headers: response.headers,  // kann man z.B. für Range-Infos nutzen
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: "error",
+      message: getErrorMessage(error),
+    };
+  }
 }
-
 
 export async function postDataWJSON(endpoint, data) {
     console.log(data);
