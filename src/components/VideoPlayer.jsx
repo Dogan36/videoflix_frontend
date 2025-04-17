@@ -10,7 +10,7 @@ export default function VideoPlayer({
   currentResolution,
   onResolutionChange,
   availableResolutions = [120, 360, 720, 1080],
-  autostart    
+  autostart = true,    
 }) {
   const playerRef = useRef();
   const wrapperRef = useRef();
@@ -24,7 +24,7 @@ export default function VideoPlayer({
   const [playing, setPlaying] = useState(autostart);
   const [muted, setMuted] = useState(true);
 
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0);
   const prevVolumeRef = useRef(volume);
 
   // Slider‑Anzeige beim Mute‑Hover
@@ -44,11 +44,13 @@ export default function VideoPlayer({
 
   const togglePlay = () => setPlaying(p => !p);
   const toggleMute = () => {
+    console.log("toggleMute", muted, volume, prevVolumeRef.current);
     if (muted) {
       setMuted(false);
-      setVolume(prevVolumeRef.current);
+      setVolume(prevVolumeRef.current || 0.5);
     } else {
       prevVolumeRef.current = volume;
+      setVolume(0);
       setMuted(true);
     }
   };
@@ -126,7 +128,6 @@ export default function VideoPlayer({
         onProgress={handleProgress}
         onDuration={handleDuration}
         onReady={handleReady}
-        autostart
       />
 
       {/* Titel */}
@@ -185,7 +186,6 @@ export default function VideoPlayer({
             className={styles.resolutionSelect}
             value={currentResolution}
             onChange={handleResolutionChangeLocal}
-            menuPlacement="top"
           >
             {availableResolutions.map(res => (
               <option key={res} value={res}>

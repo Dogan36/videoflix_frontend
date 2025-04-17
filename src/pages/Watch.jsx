@@ -68,7 +68,7 @@ export default function Watch() {
     };
   }, []);
 
-  if (!movie) return <div className={styles.loader}>Lade Film …</div>;
+  if (!movie) return <div className={styles.loader}>Loading...</div>;
 
   return (
     <div className={styles.videoWrapper}>
@@ -89,7 +89,7 @@ export default function Watch() {
         currentResolution={videoResolution}
         onResolutionChange={setVideoResolution}
         availableResolutions={[120, 360, 720, 1080]}
-        autostart={true}   
+        
         
       />
     </div>

@@ -11,10 +11,25 @@ function HeroSection({ movie}) {
   return (
     <div className={styles.hero}>
       <div className={styles.videoContainer}>
-      <video key={movie?.trailer} autoPlay loop muted playsInline className={styles.backgroundVideo}>
-        {movie?.trailer && <source src={movie?.trailer} type="video/mp4" />}
-        Your browser does not support the video tag.
-      </video>
+      {movie?.trailer ? (
+        <video
+          key={movie.trailer}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className={styles.backgroundVideo}
+        >
+          <source src={movie.trailer} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      ) : movie?.thumbnail ? (
+        <img
+          src={movie?.thumbnail}
+          alt={movie.title}
+          className={styles.backgroundVideo}
+        />
+      ) : null}
       </div>
       
       <div className={styles.heroContent}>
