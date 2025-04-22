@@ -3,23 +3,37 @@ import eyeOpen from "@/assets/visibility.svg";
 import eyeClosed from "@/assets/visibility_off.svg";
 import { useState } from "react";
 import warning from "@/assets/warning.svg";
-import { validateEmail, validatePassword, validatePasswordRepeat } from "@/utils/formvalidation";
+import {
+  validateEmail,
+  validatePassword,
+  validatePasswordRepeat,
+} from "@/utils/formvalidation";
 import { handleRegistration } from "../services/authHelpers";
 
-function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonAction, setToastButtonText, setToastType }) {
+export default function SignupForm({
+  setStep,
+  email,
+  setEmail,
+  setToastMessage,
+  setToastButtonAction,
+  setToastButtonText,
+  setToastType,
+  setShowToast,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
-  const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPassword = () =>
+    setShowConfirmPassword(!showConfirmPassword);
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordRepeatError, setPasswordRepeatError] = useState("");
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
     const passwordRepeatErr = validatePasswordRepeat(password, passwordRepeat);
@@ -27,9 +41,19 @@ function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonA
     setEmailError(emailErr);
     setPasswordError(passwordErr);
     setPasswordRepeatError(passwordRepeatErr);
-  
+
     if (emailErr || passwordErr || passwordRepeatErr) return;
-      handleRegistration({ email, password, passwordRepeat, setStep, setToastMessage, setToastButtonAction, setToastButtonText, setToastType  });
+    handleRegistration({
+      email,
+      password,
+      passwordRepeat,
+      setStep,
+      setToastMessage,
+      setToastButtonAction,
+      setToastButtonText,
+      setToastType,
+      setShowToast,
+    });
   };
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
@@ -41,7 +65,12 @@ function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonA
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      {emailError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{emailError}</span></div>}
+      {emailError && (
+        <div className={styles.errorWrapper}>
+          <img src={warning} alt="" />
+          <span>{emailError}</span>
+        </div>
+      )}
       <div className={styles.inputWrapper}>
         <input
           className={styles.loginInput}
@@ -57,7 +86,12 @@ function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonA
           className={styles.toggleIcon}
         />
       </div>
-      {passwordError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{passwordError}</span></div>}
+      {passwordError && (
+        <div className={styles.errorWrapper}>
+          <img src={warning} alt="" />
+          <span>{passwordError}</span>
+        </div>
+      )}
       <div className={styles.inputWrapper}>
         <input
           className={styles.loginInput}
@@ -65,20 +99,27 @@ function SignupForm({ setStep, email, setEmail, setToastMessage, setToastButtonA
           placeholder="Password"
           value={passwordRepeat}
           onChange={(e) => setPasswordRepeat(e.target.value)}
-
         />
         <img
           src={showConfirmPassword ? eyeClosed : eyeOpen}
-          alt={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}
+          alt={
+            showConfirmPassword
+              ? "Hide password confirmation"
+              : "Show password confirmation"
+          }
           onClick={toggleConfirmPassword}
           className={styles.toggleIcon}
         />
       </div>
-      {passwordRepeatError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{passwordRepeatError}</span></div>}
-      
+      {passwordRepeatError && (
+        <div className={styles.errorWrapper}>
+          <img src={warning} alt="" />
+          <span>{passwordRepeatError}</span>
+        </div>
+      )}
+
       <button onClick={handleSubmit}>Get Started</button>
     </form>
   );
 }
 
-export default SignupForm;

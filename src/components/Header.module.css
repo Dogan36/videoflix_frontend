@@ -43,3 +43,21 @@
     }
   }
   
+  @media screen and (max-width: 768px) {
+    .headerContent{
+      padding: 1rem;
+    }
+    .logo{
+      height: 40px;
+    }
+
+    .logoText{
+      display: none;
+    }
+    .backArrow{
+      height: 40px;
+      width: 40px;
+    }
+    
+  }
+  

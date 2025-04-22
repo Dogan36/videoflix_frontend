@@ -23,7 +23,7 @@ function ForgotForm({email, setEmail, setToastMessage, setToastButtonAction, set
 
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
-      <span className="formHeader">Forgot your password?#2E3EDF</span>
+      <span className="formHeader">Forgot your password?</span>
         <span className="formSubheader">We will send you an email with Instructions to reset your password.</span>
       <input
         className={styles.loginInput}

@@ -27,7 +27,7 @@ function ResetPasswordForm() {
     setPasswordRepeatError(passwordRepeatErr);
   
     if (passwordErr || passwordRepeatErr) return;
-      handleReset({password, passwordRepeat, setPasswordError, setPasswordRepeatError });
+      handleReset({password, passwordRepeat});
   };
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
@@ -67,7 +67,6 @@ function ResetPasswordForm() {
         />
       </div>
       {passwordRepeatError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{passwordRepeatError}</span></div>}
-      
       <button onClick={handleSubmit}>Reset my password</button>
     </form>
   );

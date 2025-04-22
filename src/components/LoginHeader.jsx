@@ -1,5 +1,7 @@
 import styles from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
+import logo from "@/assets/logo.svg";
+import logoText from "@/assets/logoText.svg";
 function LoginHeader({step, setStep, context = "login" }) {
   const navigate = useNavigate();
   const handleButton = () => {
@@ -12,7 +14,10 @@ function LoginHeader({step, setStep, context = "login" }) {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-      <h1 className={styles.logo}>VIDEOFLIX</h1>
+      <div className={styles.logoContainer}>
+        <img className={styles.logo} src={logo} alt="Logo" />
+        <img className={styles.logoText} src={logoText} alt="Logo Text" />
+      </div>
       {step !== "login" &&
       <button onClick={()=>handleButton()}>Log In</button>}
       </div>

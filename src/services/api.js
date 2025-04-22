@@ -1,25 +1,23 @@
 import { API_BASE_URL } from "@/config";
 
-export function setAuthCredentials(token, userId, username) {
-    localStorage.setItem('auth-token', token);
-    localStorage.setItem('auth-user', username);
-    localStorage.setItem('auth-user-id', userId);
+export function setAuthCredentials(token, userId) {
+    localStorage.setItem('videoflix-auth-token', token);
+    localStorage.setItem('videoflix-auth-user-id', userId);
 }
 
 export function removeAuthCredentials() {
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('auth-user');
-    localStorage.removeItem('auth-user-id');
+    localStorage.removeItem('videoflix-auth-token');
+    localStorage.removeItem('videoflix-auth-user-id');
 }
 
 export function getAuthToken() {
-    return localStorage.getItem('auth-user');
+    return localStorage.getItem('videoflix-auth-token');
 }
 
 
 
 export function getAuthUserId() {
-    return localStorage.getItem('auth-user-id');
+    return localStorage.getItem('videoflix-auth-user-id');
 }
 
 
