@@ -5,7 +5,8 @@ import { useState } from "react";
 import warning from "@/assets/warning.svg";
 import {  validatePassword, validatePasswordRepeat } from "@/utils/formvalidation";
 import { handleReset } from "../services/authHelpers";
-
+import { useToast } from "@/contexts/ToastContext";
+import { useNavigate, useParams } from "react-router-dom";
 function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -16,10 +17,11 @@ function ResetPasswordForm() {
 
   const [passwordError, setPasswordError] = useState("");
   const [passwordRepeatError, setPasswordRepeatError] = useState("");
-  
-  const handleSubmit = (e) => {
+  const { showToast } = useToast();
+  const navigate = useNavigate();
+  const { uid, token } = useParams();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const passwordErr = validatePassword(password);
     const passwordRepeatErr = validatePasswordRepeat(password, passwordRepeat);
     
@@ -27,7 +29,29 @@ function ResetPasswordForm() {
     setPasswordRepeatError(passwordRepeatErr);
   
     if (passwordErr || passwordRepeatErr) return;
-      handleReset({password, passwordRepeat});
+      
+      const res = await handleReset(password, passwordRepeat, uid, token);
+
+    if (res.ok) {
+      showToast({
+        type: "success",
+        message: "Passwort erfolgreich zurückgesetzt. Du kannst dich jetzt einloggen.",
+        buttonText: "Log In",
+        buttonAction: () => navigate("/login"),
+      });
+    }
+    else if (res.status === 404) {
+      showToast({
+        type: "error",
+        message: "Email nicht gefunden. Bitte überprüfe deine Eingabe.",
+        
+      });
+    } else {
+      showToast({
+        type: "error",
+        message: "Unbekannter Fehler. Versuch’s später noch einmal.",
+      });
+    } 
   };
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>

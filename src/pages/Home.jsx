@@ -23,7 +23,6 @@ function Home() {
   useEffect(() => {
     async function loadMovies() {
       const res = await getData("movies/home/");
-      console.log("Response:", res);
       if (res.ok) {
         setNewest(res.data.newest);
         setRecentlyWatched(res.data.recently_watched);
@@ -39,11 +38,7 @@ function Home() {
     }
     loadMovies();
   }, []); // movies is intentionally excluded from dependencies to avoid infinite re-renders
-
-  useEffect(() => {
-    console.log(categories);
-   
-  }, [categories]);
+;
 
   return (
     <>

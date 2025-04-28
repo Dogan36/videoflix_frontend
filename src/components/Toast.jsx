@@ -2,7 +2,6 @@ import styles from "./Toast.module.css";
 import errorIcon from "@/assets/error_icon.svg"; // dein Icon-Pfad
 import successIcon from "@/assets/success_icon.png"; // dein Icon-Pfad
 function Toast({ message, buttonText, onAction, onClose, type }) {
-  console.log(message, buttonText, onAction, onClose, type);
     return (
       <div className={styles.toast}>
       

@@ -44,7 +44,6 @@ export default function VideoPlayer({
 
   const togglePlay = () => setPlaying(p => !p);
   const toggleMute = () => {
-    console.log("toggleMute", muted, volume, prevVolumeRef.current);
     if (muted) {
       setMuted(false);
       setVolume(prevVolumeRef.current || 0.5);

@@ -4,11 +4,13 @@ import arrow_back from "@/assets/arrow_back.svg";
 import logo from "@/assets/logo.svg";
 import logoText from "@/assets/logoText.svg";
 import { handleLogout } from "@/services/authHelpers";
+import { useToast } from "../contexts/ToastContext";
 
 function HomeHeader({ onResetActiveMovie }) {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
+  const { showToast } = useToast();
   const handleBack = () => {
     navigate("/");
   };
@@ -16,6 +18,10 @@ function HomeHeader({ onResetActiveMovie }) {
   const logout = () => {
    handleLogout()
       .then(() => {
+        showToast({
+          type: "success",
+          message: "Logout erfolgreich.",
+        });
         navigate("/login");
       })
       .catch((error) => {

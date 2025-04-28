@@ -40,17 +40,12 @@ function getErrorMessage(error) {
     } else if (error.message.includes('Failed to fetch')) {
         errorMessage = 'Failed to connect to the server.';
     }
-
     return errorMessage;
 }
-
 
 export async function getData(endpoint, params = {}) {
   // Query-String anhängen
   let url = `${API_BASE_URL}${endpoint}`;
-  console.log(endpoint);
-  console.log(params);
-  console.log(url);
   if (Object.keys(params).length) {
     const qs = new URLSearchParams(params).toString();
     url += url.includes("?") ? "&" : "?" + qs;
@@ -90,9 +85,6 @@ export async function getData(endpoint, params = {}) {
 }
 
 export async function postDataWJSON(endpoint, data) {
-    console.log(data);
-    console.log(endpoint);
-    
     let header = createHeaders();
     header['Content-Type'] = 'application/json';
     try {

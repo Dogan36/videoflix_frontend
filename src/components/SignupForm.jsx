@@ -9,16 +9,12 @@ import {
   validatePasswordRepeat,
 } from "@/utils/formvalidation";
 import { handleRegistration } from "../services/authHelpers";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function SignupForm({
   setStep,
   email,
-  setEmail,
-  setToastMessage,
-  setToastButtonAction,
-  setToastButtonText,
-  setToastType,
-  setShowToast,
+  setEmail
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,8 +26,8 @@ export default function SignupForm({
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordRepeatError, setPasswordRepeatError] = useState("");
-
-  const handleSubmit = (e) => {
+  const { showToast } = useToast();
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const emailErr = validateEmail(email);
@@ -43,17 +39,31 @@ export default function SignupForm({
     setPasswordRepeatError(passwordRepeatErr);
 
     if (emailErr || passwordErr || passwordRepeatErr) return;
-    handleRegistration({
+    const res = await handleRegistration({
       email,
       password,
       passwordRepeat,
-      setStep,
-      setToastMessage,
-      setToastButtonAction,
-      setToastButtonText,
-      setToastType,
-      setShowToast,
+      setStep
     });
+    if (res.ok) {
+      showToast({
+        type: "success",
+        message: "Successfully registered. Please check your email to activate your account.",
+      });
+    }
+    else if (res.status === 400) {
+      showToast({
+        type: "error",
+        message: "This email is already registered",
+        buttonText: "Log In",
+        buttonAction: () => setStep("login"),
+      });
+    } else {
+      showToast({
+        type: "error",
+        message: "Unknown error. Try again later",
+      });
+    } 
   };
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>

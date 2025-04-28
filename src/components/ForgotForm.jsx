@@ -3,22 +3,27 @@ import warning from "@/assets/warning.svg";
 import { useState } from "react";
 import { validateEmail} from "@/utils/formvalidation";
 import { handleForgot } from "../services/authHelpers";
-function ForgotForm({email, setEmail, setToastMessage, setToastButtonAction, setToastButtonText, setToastType}) {
+import { useToast } from "@/contexts/ToastContext";
+function ForgotForm({setStep, email, setEmail}) {
   
-
   const [emailError, setEmailError] = useState();
- 
-  const handleSubmit = (e) => {
+  const { showToast } = useToast();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     const emailErr = validateEmail(email);
-  
-  
     setEmailError(emailErr);
-   
-  
     if (emailErr) return;
-    handleForgot({email, setToastMessage, setToastButtonAction, setToastButtonText, setToastType });
+    const res = await handleForgot({email});
+    if (res.ok) {
+      showToast({ type: "success", message: "Email has been send" });
+    }
+    else if (res.status === 404) {
+      showToast({ type: "error", message: "This email is not registered", buttonText: "Sign Up", buttonAction: () => setStep("signup") });
+    } else {
+      showToast({ type: "error", message: "Unknown error. Please try again later" });
+    }
   };
 
   return (

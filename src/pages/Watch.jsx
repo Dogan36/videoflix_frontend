@@ -31,7 +31,7 @@ export default function Watch() {
   useEffect(() => {
     async function fetchMeta() {
       const { ok, data } = await getData(`movies/${movieId}/`);
-      console.log("Meta:", ok, data);
+    
       if (ok) setMovie(data);
       else console.error("Meta‑Error:", data?.message);
     }
@@ -42,7 +42,6 @@ export default function Watch() {
   useEffect(() => {
     if (!movie) return;
     const url = `${API_BASE_URL}movies/${movieId}/stream/?resolution=${videoResolution}`;
-    console.log("Video‑URL:", url);
     setVideoUrl(url);
   }, [movie, videoResolution, movieId]);
 
