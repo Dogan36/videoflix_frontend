@@ -44,8 +44,9 @@ function getErrorMessage(error) {
 }
 
 export async function getData(endpoint, params = {}) {
-  // Query-String anhängen
+  console.log("GET request to:", endpoint, "with params:", params);
   let url = `${API_BASE_URL}${endpoint}`;
+  console.log("URL:", url);
   if (Object.keys(params).length) {
     const qs = new URLSearchParams(params).toString();
     url += url.includes("?") ? "&" : "?" + qs;

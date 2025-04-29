@@ -70,6 +70,7 @@ export default function LoginForm({
       )}
 
       <div className={styles.inputWrapper}>
+        
         <input
           className={styles.loginInput}
           type={showPassword ? "text" : "password"}

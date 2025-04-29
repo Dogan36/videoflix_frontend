@@ -4,17 +4,47 @@ import styles from "./Home.module.css";
 import HeroSection from "../components/HeroSection";
 import MovieCard from "../components/MovieCard";
 import { getData } from "../services/api";
-import { useState, useEffect} from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { getColumnCountForWindow } from "@/utils/columnUtils";
 
 function Home() {
   const isMobile = window.innerWidth <= 768;
-  const [newest, setNewest] = useState();
-  const [recentlyWatched, setRecentlyWatched] = useState();
-  const [finished, setFinished] = useState();
-  const [categories, setCategories] = useState([]); // Kategorien erwarten wir als Array, in dem jedes Element ein Objekt mit { category, results, next, ... } ist
+
+  const newestRef = useRef();
+  const recentRef = useRef();
+  const finishedRef = useRef();
+  const categoryRefs = useRef({}); // { [category_id]: element }
+  const containerRef = useRef();
+
+  const [newest, setNewest] = useState([]);
+  const [newestPage, setNewestPage] = useState(2);
+  const [hasMoreNewest, setHasMoreNewest] = useState(true);
+  const [isLoadingNewest, setIsLoadingNewest] = useState(false);
+
+  // --- State für Recently Watched ---
+  const [recentlyWatched, setRecentlyWatched] = useState([]);
+  const [recentlyWatchedPage, setRecentlyWatchedPage] = useState(2);
+  const [hasMoreRecentlyWatched, setHasMoreRecentlyWatched] = useState(true);
+  const [isLoadingRecentlyWatched, setIsLoadingRecentlyWatched] =
+    useState(false);
+
+  // --- State für Finished Movies ---
+  const [finished, setFinished] = useState([]);
+  const [finishedPage, setFinishedPage] = useState(2);
+  const [hasMoreFinished, setHasMoreFinished] = useState(true);
+  const [isLoadingFinished, setIsLoadingFinished] = useState(false);
+
+  // --- State für Kategorien mit Paging ---
+  const [categories, setCategories] = useState([]); // Array von { category, category_id, movies }
+  const [categoryPages, setCategoryPages] = useState({}); // { [id]: nextPage }
+  const [hasMoreCategory, setHasMoreCategory] = useState({}); // { [id]: boolean }
+  const [isLoadingCategory, setIsLoadingCategory] = useState({}); // { [id]: boolean } // Kategorien erwarten wir als Array, in dem jedes Element ein Objekt mit { category, results, next, ... } ist
+
   const [activeMovie, setActiveMovie] = useState(null);
   const [featuredMovie, setFeaturedMovie] = useState(null);
+
   const resetActiveMovie = () => setActiveMovie(null);
+
   function updateActiveMovie(movie) {
     setActiveMovie(movie);
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -22,100 +52,354 @@ function Home() {
 
   useEffect(() => {
     async function loadMovies() {
-      const res = await getData("movies/home/");
-      if (res.ok) {
-        setNewest(res.data.newest);
-        setRecentlyWatched(res.data.recently_watched);
-        setFinished(res.data.finished);
-        setCategories(res.data.categories);
-        if (res.data.newest && res.data.newest.length > 0) {
-          setFeaturedMovie(res.data.newest[0]);
-        } // Setze den ersten Film als aktiv
-      } else {
-        console.error("❌ Fehler beim Laden der Filme:", res.message);
+      const columns = getColumnCountForWindow();
+      try {
+        const res = await getData("movies/home/", { page_size: columns });
+        console.log("Home movies:", res.data);
+        if (res.ok) {
+          // Newest
+          setNewest(res.data.newest.results || []);
+          setNewestPage(2);
+          setHasMoreNewest(res.data.newest.next ? true : false);
+
+          // Recently Watched
+          setRecentlyWatched(res.data.recently_watched.results || []);
+          setRecentlyWatchedPage(2);
+          setHasMoreRecentlyWatched(
+            res.data.recently_watched.next ? true : false
+          );
+
+          // Finished
+          setFinished(res.data.finished.results || []);
+          setFinishedPage(2);
+          setHasMoreFinished(res.data.finished.next ? true : false);
+
+          // Kategorien initial
+          const cats = (res.data.categories || []).map((cat) => ({
+            category: cat.category,
+            category_id: cat.category_id,
+            movies: cat.results || [], // ← hier auf `results` zugreifen
+            next: cat.next, // optional abspeichern, um zu prüfen
+          }));
+          setCategories(cats);
+
+          // Paging-States für Kategorien initialisieren
+          const pages = {};
+          const more = {};
+          const load = {};
+          cats.forEach((cat) => {
+            pages[cat.category_id] = 2;
+            more[cat.category_id] = Boolean(cat.next); // ← next prüfen, nicht cat.next auf truthy
+            load[cat.category_id] = false;
+          });
+          setCategoryPages(pages);
+          setHasMoreCategory(more);
+          setIsLoadingCategory(load);
+
+          // Featured
+          if (res.data.newest.results && res.data.newest.results.length > 0) {
+            setFeaturedMovie(res.data.newest.results[0]);
+          }
+        } else {
+          console.error(
+            "❌ Fehler beim Laden der Filme:",
+            res.status,
+            res.message
+          );
+        }
+      } catch (err) {
+        console.error("❌ Netzwerkfehler beim Laden:", err);
       }
-      //setLoading(false);
     }
     loadMovies();
-  }, []); // movies is intentionally excluded from dependencies to avoid infinite re-renders
-;
+  }, []);
+
+  const loadMoreNewest = useCallback(async () => {
+    if (!hasMoreNewest || isLoadingNewest) return;
+    setIsLoadingNewest(true);
+    const columns = getColumnCountForWindow();
+    try {
+      const res = await getData("movies/load-more/", {
+        section: "newest",
+        page: newestPage,
+        page_size: columns,
+      });
+      if (res.ok) {
+        setNewest((prev) => [...prev, ...res.data.results]);
+        if (res.data.next) setNewestPage((prev) => prev + 1);
+        else setHasMoreNewest(false);
+      } else console.error("LoadMore Newest error:", res.status);
+    } catch (err) {
+      console.error("LoadMore Newest network error:", err);
+    } finally {
+      setIsLoadingNewest(false);
+    }
+  }, [hasMoreNewest, isLoadingNewest, newestPage]);
+
+  const loadMoreRecentlyWatched = useCallback(async () => {
+    console.log(
+      "LoadMore RW:",
+      hasMoreRecentlyWatched,
+      isLoadingRecentlyWatched
+    );
+    if (!hasMoreRecentlyWatched || isLoadingRecentlyWatched) return;
+    setIsLoadingRecentlyWatched(true);
+    const columns = getColumnCountForWindow();
+    try {
+      const res = await getData("movies/load-more/", {
+        section: "recently_watched",
+        page: recentlyWatchedPage,
+        page_size: columns,
+      });
+      if (res.ok) {
+        setRecentlyWatched((prev) => [...prev, ...res.data.results]);
+        if (res.data.next) setRecentlyWatchedPage((prev) => prev + 1);
+        else setHasMoreRecentlyWatched(false);
+      } else console.error("LoadMore RW error:", res.status);
+    } catch (err) {
+      console.error("LoadMore RW network error:", err);
+    } finally {
+      setIsLoadingRecentlyWatched(false);
+    }
+  }, [hasMoreRecentlyWatched, isLoadingRecentlyWatched, recentlyWatchedPage]);
+
+  const loadMoreFinished = useCallback(async () => {
+    if (!hasMoreFinished || isLoadingFinished) return;
+    setIsLoadingFinished(true);
+    const columns = getColumnCountForWindow();
+    try {
+      const res = await getData("movies/load-more/", {
+        section: "finished",
+        page: finishedPage,
+        page_size: columns,
+      });
+      if (res.ok) {
+        setFinished((prev) => [...prev, ...res.data.results]);
+        if (res.data.next) setFinishedPage((prev) => prev + 1);
+        else setHasMoreFinished(false);
+      } else console.error("LoadMore Finished error:", res.status);
+    } catch (err) {
+      console.error("LoadMore Finished network error:", err);
+    } finally {
+      setIsLoadingFinished(false);
+    }
+  }, [hasMoreFinished, isLoadingFinished, finishedPage]);
+
+  const loadMoreCategory = useCallback(
+    async (category_id) => {
+      if (!hasMoreCategory[category_id] || isLoadingCategory[category_id])
+        return;
+      setIsLoadingCategory((prev) => ({ ...prev, [category_id]: true }));
+      const columns = getColumnCountForWindow();
+      try {
+        const res = await getData("movies/load-more/", {
+          section: "category",
+          category_id,
+          page: categoryPages[category_id],
+          page_size: columns,
+        });
+        if (res.ok) {
+          setCategories((prevCats) =>
+            prevCats.map((cat) =>
+              cat.category_id === category_id
+                ? { ...cat, movies: [...cat.movies, ...res.data.results] }
+                : cat
+            )
+          );
+          if (res.data.next)
+            setCategoryPages((prev) => ({
+              ...prev,
+              [category_id]: prev[category_id] + 1,
+            }));
+          else
+            setHasMoreCategory((prev) => ({ ...prev, [category_id]: false }));
+        } else
+          console.error(`LoadMore Category ${category_id} error:`, res.status);
+      } catch (err) {
+        console.error(`LoadMore Category ${category_id} network error:`, err);
+      } finally {
+        setIsLoadingCategory((prev) => ({ ...prev, [category_id]: false }));
+      }
+    },
+    [hasMoreCategory, isLoadingCategory, categoryPages]
+  );
+
+  useEffect(() => {
+    const observers = [];
+
+    // Helper zum Beobachten eines einzelnen Elements
+    const observe = (element, loadMoreFn) => {
+      if (!element) return;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // Logge, was gemessen wird
+          console.log(`📦 Beobachte:`, entry.target);
+          console.log(`🧐 isIntersecting:`, entry.isIntersecting);
+          console.log(`📏 intersectionRatio:`, entry.intersectionRatio);
+          console.log(`📐 target boundingClientRect:`, entry.boundingClientRect);
+          console.log(`📐 rootBounds (Container):`, entry.rootBounds);
+      
+          if (entry.isIntersecting && entry.intersectionRatio > 0) {
+            console.log(`🚀 Lade Nach:`, entry.target);
+            loadMoreFn();
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: containerRef.current,
+        rootMargin: '0px -16px 0px -16px',
+      });
+        
+      obs.observe(element);
+      observers.push(obs);
+    };
+
+    // Newest
+    if (hasMoreNewest && !isLoadingNewest) {
+      if (newestRef.current) {
+        console.log("Observing newestRef:", newestRef.current);
+      } else {
+        console.log("newestRef.current is undefined");
+      }
+      observe(newestRef.current, loadMoreNewest);
+    }
+    // Continue Watching
+    if (hasMoreRecentlyWatched && !isLoadingRecentlyWatched) {
+      observe(recentRef.current, loadMoreRecentlyWatched);
+    }
+    // Watch Again
+    if (hasMoreFinished && !isLoadingFinished) {
+      observe(finishedRef.current, loadMoreFinished);
+    }
+    // Categories
+    categories.forEach((cat) => {
+      const el = categoryRefs.current[cat.category_id];
+      if (
+        hasMoreCategory[cat.category_id] &&
+        !isLoadingCategory[cat.category_id]
+      ) {
+        observe(el, () => loadMoreCategory(cat.category_id));
+      }
+    });
+
+    // Cleanup beim Unmount oder wenn Dependencies sich ändern
+    return () => {
+      observers.forEach((obs) => obs.disconnect());
+    };
+  }, [
+    containerRef,
+    loadMoreNewest,
+    loadMoreRecentlyWatched,
+    loadMoreFinished,
+    loadMoreCategory,
+
+    hasMoreNewest,
+    isLoadingNewest,
+    hasMoreRecentlyWatched,
+    isLoadingRecentlyWatched,
+    hasMoreFinished,
+    isLoadingFinished,
+
+    categories,
+    isLoadingCategory,
+    hasMoreCategory,
+  ]);
 
   return (
     <>
-      <HomeHeader  onResetActiveMovie={resetActiveMovie} />
+      <HomeHeader onResetActiveMovie={resetActiveMovie} />
       <div className={styles.home}>
-        {(!isMobile || activeMovie) && <HeroSection movie={activeMovie || featuredMovie} />}
-        <div className={styles.moviesContent}>
+        {(!isMobile || activeMovie) && (
+          <HeroSection movie={activeMovie || featuredMovie} />
+        )}
+        <div ref={containerRef} className={styles.moviesContent}>
           {/* Newest Movies */}
-          { newest &&  newest.length > 0 && (
+          {newest.length > 0 && (
             <section className={styles.movieRow}>
               <h2 className={styles.movieRowTitle}>Newest Movies</h2>
               <div className={styles.movieRowPosters}>
-                { newest.map((movie) => (
-                  <MovieCard
-                    key={movie.id}
-                    movie={movie}
-                    onClick={() => updateActiveMovie(movie)}
-                  />
-                ))}
+                {newest.map((movie, i) => {
+                  const isLast = i === newest.length - 1;
+                  return (
+                    <div key={movie.id} ref={isLast ? newestRef : null}>
+                      <MovieCard
+                        movie={movie}
+                        onClick={() => updateActiveMovie(movie)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
 
           {/* Recently Watched */}
-          { recentlyWatched &&
-             recentlyWatched.length > 0 && (
-              <section className={styles.movieRow}>
-                <h2 className={styles.movieRowTitle}>Continue Watching</h2>
-                <div className={styles.movieRowPosters}>
-                  { recentlyWatched.map((movie) => (
-                    <MovieCard
-                      key={movie.id}
-                      movie={movie}
-                      onClick={() => updateActiveMovie(movie)}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
-
-          {/* Finished Movies */}
-          { finished &&  finished.length > 0 && (
+          {recentlyWatched && recentlyWatched.length > 0 && (
             <section className={styles.movieRow}>
-              <h2 className={styles.movieRowTitle}>Watch Again</h2>
+              <h2 className={styles.movieRowTitle}>Continue Watching</h2>
               <div className={styles.movieRowPosters}>
-                { finished.map((movie) => (
-                  <MovieCard
-                    key={movie.id}
-                    movie={movie}
-                    onClick={() => updateActiveMovie(movie)}
-                  />
-                ))}
+                {recentlyWatched.map((movie, i) => {
+                  const isLast = i === recentlyWatched.length - 1;
+                  return (
+                    <div key={movie.id} ref={isLast ? recentRef : null}>
+                      <MovieCard
+                        movie={movie}
+                        onClick={() => updateActiveMovie(movie)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
 
+
           {/* Categories */}
-          { categories &&
-             categories.length > 0 &&
-             categories.map(
-              (catObj, index) =>
-                catObj &&
-                          catObj && catObj.movies.length > 0 && (
-                  <section className={styles.movieRow} key={index}>
-                    <h2 className={styles.movieRowTitle}>{catObj.category}</h2>
-                    <div className={styles.movieRowPosters}>
-                      {catObj.movies.map((movie) => (
-                        <MovieCard
-                          key={movie.id}
-                          movie={movie}
-                          onClick={() => updateActiveMovie(movie)}
-                        />
-                      ))}
+          {categories.map((cat) => (
+            <section className={styles.movieRow} key={cat.category_id}>
+              <h2 className={styles.movieRowTitle}>{cat.category}</h2>
+              <div className={styles.movieRowPosters}>
+                {cat.movies.map((movie, i) => {
+                  const isLast = i === cat.movies.length - 1;
+                  return (
+                    <div
+                      key={movie.id}
+                      ref={
+                        isLast
+                          ? (el) => (categoryRefs.current[cat.category_id] = el)
+                          : null
+                      }
+                    >
+                      <MovieCard
+                        movie={movie}
+                        onClick={() => updateActiveMovie(movie)}
+                      />
                     </div>
-                  </section>
-                )
-            )}
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+
+          {/* Finished Movies */}
+          {finished && finished.length > 0 && (
+            <section className={styles.movieRow}>
+              <h2 className={styles.movieRowTitle}>Watch Again</h2>
+              <div className={styles.movieRowPosters}>
+                {finished.map((movie, i) => {
+                  const isLast = i === finished.length - 1;
+                  return (
+                    <div key={movie.id} ref={isLast ? finishedRef : null}>
+                      <MovieCard
+                        movie={movie}
+                        onClick={() => updateActiveMovie(movie)}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </div>
       </div>
       <Footer />

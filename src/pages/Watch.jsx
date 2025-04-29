@@ -31,7 +31,7 @@ export default function Watch() {
   useEffect(() => {
     async function fetchMeta() {
       const { ok, data } = await getData(`movies/${movieId}/`);
-    
+      console.log("Meta:", data);
       if (ok) setMovie(data);
       else console.error("Meta‑Error:", data?.message);
     }
@@ -83,13 +83,13 @@ export default function Watch() {
       </div>
 
       <VideoPlayer
+        movieId={movieId}
         videoUrl={videoUrl}
         showUI={showHeader}
         currentResolution={videoResolution}
         onResolutionChange={setVideoResolution}
         availableResolutions={[120, 360, 720, 1080]}
-        
-        
+        savedProgress={movie.progressInSeconds}
       />
     </div>
   );

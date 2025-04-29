@@ -3,7 +3,7 @@
     max-width: 95vw;
     gap: 32px;
     padding: 43px clamp(24px, 5vw, 56px);
-    background-color: white;
+    background-color: #1B1B22D9;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,12 +18,15 @@
 .loginInput {
     border: 1px solid var(--primary-color);
     background: none;
-    color: var(--primary-color);
+    color: white;
     &:focus-visible {
         outline: 1px solid var(--primary-color);
     }
     &::placeholder {
-        color: var(--primary-color)
+        color: white;
+    }
+    &span{
+        color: white;
     }
 }
 
@@ -32,8 +35,8 @@
     width: 360px;
     max-width: 100%;
 }
+
 .inputWrapper input{
-       
         padding-right: 3rem; /* Platz für das Icon */
       
 }
@@ -48,6 +51,7 @@
 .formLastChild{
     display: flex;
     gap: 24px;
+    color: white;
 }
 
 .errorWrapper {

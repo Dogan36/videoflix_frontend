@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import styles from "./VideoPlayer.module.css";
-
+import { postDataWJSON } from "@/services/api";
 export default function VideoPlayer({
   videoUrl,
   title,
@@ -10,7 +10,9 @@ export default function VideoPlayer({
   currentResolution,
   onResolutionChange,
   availableResolutions = [120, 360, 720, 1080],
-  autostart = true,    
+  autostart = true,
+  savedProgress,
+  movieId
 }) {
   const playerRef = useRef();
   const wrapperRef = useRef();
@@ -19,6 +21,9 @@ export default function VideoPlayer({
   const savedPositionRef = useRef(0);
   const savedPlayingRef = useRef(false);
   const [pendingSeek, setPendingSeek] = useState(false);
+
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [initialSeek, setInitialSeek] = useState(0);
 
   // Player‑States
   const [playing, setPlaying] = useState(autostart);
@@ -42,7 +47,7 @@ export default function VideoPlayer({
   //  Event‑Handler
   // --------------------
 
-  const togglePlay = () => setPlaying(p => !p);
+  const togglePlay = () => setPlaying((p) => !p);
   const toggleMute = () => {
     if (muted) {
       setMuted(false);
@@ -54,19 +59,19 @@ export default function VideoPlayer({
     }
   };
 
-  const handleVolumeChange = e => {
+  const handleVolumeChange = (e) => {
     const v = parseFloat(e.target.value);
     setVolume(v);
     if (v > 0) setMuted(false);
     else setMuted(true);
   };
 
-  const handleProgress = state => {
+  const handleProgress = (state) => {
     setPlayedFraction(state.played);
     setPlayedSeconds(state.playedSeconds);
   };
 
-  const handleDuration = dur => {
+  const handleDuration = (dur) => {
     setDuration(dur);
   };
 
@@ -79,14 +84,14 @@ export default function VideoPlayer({
     }
   };
 
-  const seekToFraction = e => {
+  const seekToFraction = (e) => {
     const frac = parseFloat(e.target.value);
     playerRef.current.seekTo(frac, "fraction");
     setPlayedFraction(frac);
   };
 
   // Auflösungs‑Wechsel: erst Zeit & Status merken, dann parent callback aufrufen
-  const handleResolutionChangeLocal = e => {
+  const handleResolutionChangeLocal = (e) => {
     const newRes = parseInt(e.target.value, 10);
     if (playerRef.current) {
       savedPositionRef.current = playerRef.current.getCurrentTime();
@@ -108,14 +113,67 @@ export default function VideoPlayer({
   }, []);
 
   // Helper zum Formatieren von Zeit
-  const formatTime = secs => {
+  const formatTime = (secs) => {
     const m = Math.floor(secs / 60);
     const s = Math.floor(secs % 60);
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  useEffect(() => {
+    
+    if (savedProgress > 3) {
+      setPlaying(false);
+      setInitialSeek(savedProgress);
+      setShowResumePrompt(true);
+    } else {
+      // kein Resume nötig
+      playerRef.current.seekTo(0);
+    }
+  }, [savedProgress]);
+
+  useEffect(() => {
+    let interval;
+    if (playerRef.current) {
+      interval = setInterval(async () => {
+        const current = Math.floor(playerRef.current.getCurrentTime());
+        const atEnd = current +1 >= duration
+        await postDataWJSON('movies/progress/update/', {
+          movie_id: movieId,
+          progressInSeconds: current,
+          finished: atEnd
+        });
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [movieId, duration]);
+
   return (
     <div className={styles.playerWrapper} ref={wrapperRef}>
+      {showResumePrompt && (
+        <div className={styles.resumeOverlay}>
+          <p>
+            Would you like to resume at {formatTime(initialSeek)} or start over?
+          </p>
+          <button
+            onClick={() => {
+              setShowResumePrompt(false);
+              playerRef.current.seekTo(initialSeek, "seconds");
+              setPlaying(true);
+            }}
+          >
+            Resume
+          </button>
+          <button
+            onClick={() => {
+              setShowResumePrompt(false);
+              playerRef.current.seekTo(0, "seconds");
+              setPlaying(true);
+            }}
+          >
+            Restart
+          </button>
+        </div>
+      )}
       <ReactPlayer
         ref={playerRef}
         url={videoUrl}
@@ -186,7 +244,7 @@ export default function VideoPlayer({
             value={currentResolution}
             onChange={handleResolutionChangeLocal}
           >
-            {availableResolutions.map(res => (
+            {availableResolutions.map((res) => (
               <option key={res} value={res}>
                 {res}p
               </option>
