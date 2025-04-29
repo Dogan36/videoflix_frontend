@@ -37,15 +37,13 @@ export default function LoginForm({
       email,
       password,
     });
-    if (res.status === 404) {
-      showToast({ type: "error", message: "This email is not registered", buttonText: "Sign Up", buttonAction: () => setStep("signup") });
-    } else if (res.status === 401) {
-      showToast({ type: "error", message: "Account not activated", buttonText: "Resend", buttonAction: () => resendActivation(email) });
-    } else if (res.status === 400) {
-      showToast({ type: "error", message: "Wrong password, please try again or reset your password", buttonText: "Reset", buttonAction: () => setStep("forgot") });
-    } else if (res.ok) {
+    if (res.ok) {
       setAuthCredentials(res.data.token, res.data.user_id);
       navigate("/");
+    } else if (res.status === 401) {
+      showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Resend", buttonAction: () => resendActivation(email) });
+    } else if (res.status === 400) {
+      showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Reset", buttonAction: () => setStep("forgot") });
     } else {
       showToast({ type: "error", message: "Unknown error. Try again later" });
     }

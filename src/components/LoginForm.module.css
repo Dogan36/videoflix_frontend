@@ -2,7 +2,7 @@
     width: 520px;
     max-width: 95vw;
     gap: 32px;
-    padding: 43px clamp(24px, 5vw, 56px);
+    padding: clamp(12px, 5vw, 56px);
     background-color: #1B1B22D9;
     display: flex;
     flex-direction: column;

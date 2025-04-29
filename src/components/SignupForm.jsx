@@ -54,9 +54,7 @@ export default function SignupForm({
     else if (res.status === 400) {
       showToast({
         type: "error",
-        message: "This email is already registered",
-        buttonText: "Log In",
-        buttonAction: () => setStep("login"),
+        message: `${res.data.detail}`,
       });
     } else {
       showToast({

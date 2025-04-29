@@ -40,10 +40,10 @@ function ResetPasswordForm() {
         buttonAction: () => navigate("/login"),
       });
     }
-    else if (res.status === 404) {
+    else if (res.status === 400) {
       showToast({
         type: "error",
-        message: "Email nicht gefunden. Bitte überprüfe deine Eingabe.",
+        message: `${res.data.detail}`,
         
       });
     } else {

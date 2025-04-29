@@ -17,10 +17,10 @@ function ForgotForm({setStep, email, setEmail}) {
     if (emailErr) return;
     const res = await handleForgot({email});
     if (res.ok) {
-      showToast({ type: "success", message: "Email has been send" });
+      showToast({ type: "success", message: `${res.data.detail}` });
     }
-    else if (res.status === 404) {
-      showToast({ type: "error", message: "This email is not registered", buttonText: "Sign Up", buttonAction: () => setStep("signup") });
+    else if (res.status === 400) {
+      showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Sign Up", buttonAction: () => setStep("signup") });
     } else {
       showToast({ type: "error", message: "Unknown error. Please try again later" });
     }
