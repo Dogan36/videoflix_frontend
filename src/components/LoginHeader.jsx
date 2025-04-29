@@ -2,6 +2,7 @@ import styles from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.svg";
 import logoText from "@/assets/logoText.svg";
+
 function LoginHeader({step, setStep, context = "login" }) {
   const navigate = useNavigate();
   const handleButton = () => {
@@ -10,6 +11,10 @@ function LoginHeader({step, setStep, context = "login" }) {
     } else if (context === "reset") {
       navigate("/"); // oder navigate("/") – je nach gewünschtem Verhalten
     }
+    else if (context === "activate") {
+      console.log("activate")
+      navigate("/login", { state: { step: "login"} });
+    } 
   };
   return (
     <header className={styles.header}>
@@ -21,6 +26,7 @@ function LoginHeader({step, setStep, context = "login" }) {
       {step !== "login" &&
       <button onClick={()=>handleButton()}>Log In</button>}
       </div>
+      
     </header>
   );
 }

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getData } from "@/services/api"; 
-import HomeHeader from "../components/HomeHeader"; 
+import LoginHeader from "../components/LoginHeader";
 
 function ActivationPage() {
   const { uid, token } = useParams();
@@ -27,8 +27,8 @@ function ActivationPage() {
 
   return (
     <>
-    <HomeHeader/>
-    <div style={{ padding: "2rem", textAlign: "center" }}>
+    <LoginHeader context="activate" />
+    <div style={{ padding: "1rem", textAlign: "center" }}>
       {status === "loading" && <p>Activating your account...</p>}
       {status === "success" && <p>✅ Your account has been activated!<br/>You can now log in.</p>}
       {status === "error" && <p>❌ Activation failed. The link might be invalid or expired.</p>}
