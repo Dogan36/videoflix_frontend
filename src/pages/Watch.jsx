@@ -14,7 +14,7 @@ export default function Watch() {
   const [movie, setMovie] = useState(null);
   const [videoResolution, setVideoResolution] = useState(getVideoResolution());
   const [videoUrl, setVideoUrl] = useState("");
-
+  
   const handleBack = React.useCallback(() => {
     navigate("/");
   }, [navigate]);
@@ -90,6 +90,7 @@ export default function Watch() {
         onResolutionChange={setVideoResolution}
         availableResolutions={[120, 360, 720, 1080]}
         savedProgress={movie.progressInSeconds}
+        finished={movie.finished}
       />
     </div>
   );

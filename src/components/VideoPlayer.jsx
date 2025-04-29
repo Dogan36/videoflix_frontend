@@ -12,7 +12,8 @@ export default function VideoPlayer({
   availableResolutions = [120, 360, 720, 1080],
   autostart = true,
   savedProgress,
-  movieId
+  movieId,
+  finished
 }) {
   const playerRef = useRef();
   const wrapperRef = useRef();
@@ -120,8 +121,8 @@ export default function VideoPlayer({
   };
 
   useEffect(() => {
-    
-    if (savedProgress > 3) {
+    console.log(savedProgress, finished);
+    if (savedProgress > 3 && !finished) {
       setPlaying(false);
       setInitialSeek(savedProgress);
       setShowResumePrompt(true);
@@ -129,7 +130,7 @@ export default function VideoPlayer({
       // kein Resume nötig
       playerRef.current.seekTo(0);
     }
-  }, [savedProgress]);
+  }, [savedProgress, finished]);
 
   useEffect(() => {
     let interval;
