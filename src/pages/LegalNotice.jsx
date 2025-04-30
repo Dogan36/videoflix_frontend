@@ -33,7 +33,9 @@ function LegalNotice() {
           <br />
           Dogan Celik, same address as above
         </p>
-
+        <p>
+         All movies streamed through Videoflix are sourced from <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer">www.pexels.com</a> under the Pexels License. <br /> The movies are free to use for personal and commercial purposes, without the need for attribution. However, please note that some movies may have specific restrictions or requirements, so it's always a good idea to check the individual license for each movie before using it.
+        </p>
         <p>
           Disclaimer:
           <br />
