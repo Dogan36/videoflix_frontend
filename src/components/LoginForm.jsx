@@ -10,6 +10,11 @@ import { useToast } from "@/contexts/ToastContext";
 import { setAuthCredentials } from "../services/api";
 import { resendActivation } from "../services/authHelpers";
 
+/**
+ * LoginForm component that handles the login process.
+ * It validates the email and password inputs and sends a request to the server to log in the user.
+ * It also handles the display of error messages and the visibility of the password input.
+ */
 export default function LoginForm({
   setStep,
   email,
@@ -23,15 +28,18 @@ export default function LoginForm({
   const navigate = useNavigate();
   const { showToast } = useToast();
   
+  /**
+   * Function to handle the login process.
+   * It validates the email and password inputs, sends a request to the server,
+   * and handles the response.
+   * It also handles the display of error messages based on the response status.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
-
     setEmailError(emailErr);
     setPasswordError(passwordErr);
-
     if (emailErr || passwordErr) return;
     const res = await handleLogin({
       email,
@@ -68,7 +76,6 @@ export default function LoginForm({
       )}
 
       <div className={styles.inputWrapper}>
-        
         <input
           className={styles.loginInput}
           type={showPassword ? "text" : "password"}

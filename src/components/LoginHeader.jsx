@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.svg";
 import logoText from "@/assets/logoText.svg";
 
+/**
+ * LoginHeader component that displays the header with a logo and a login button.
+ * It handles the navigation to the login page or the activation page based on the context.
+ */
 function LoginHeader({step, setStep, context = "login" }) {
   const navigate = useNavigate();
   const handleButton = () => {
@@ -12,7 +16,6 @@ function LoginHeader({step, setStep, context = "login" }) {
       navigate("/"); // oder navigate("/") – je nach gewünschtem Verhalten
     }
     else if (context === "activate") {
-      console.log("activate")
       navigate("/login", { state: { step: "login"} });
     } 
   };

@@ -3,6 +3,10 @@ import { ToastContext } from "./ToastContext";
 import ToastWrapper from "../components/ToastWrapper";
 import Toast from "../components/Toast";
 
+/**
+ * ToastProvider component that provides a context for displaying toast notifications.
+ * It manages the state of the toast and provides methods to show and hide it.
+ */
 export function ToastProvider({ children }) {
   const [isShown, setIsShown]       = useState(false);
   const [type,    setType]          = useState("error");
@@ -10,7 +14,6 @@ export function ToastProvider({ children }) {
   const [buttonText, setButtonText] = useState("");
   const [buttonAction, setButtonAction] = useState(() => () => {});
 
-  // 1) Methode, um einen Toast anzuzeigen
   function showToast({ message, type = "error", buttonText = "", buttonAction = () => {} }) {
     setMessage(message);
     setType(type);
@@ -19,7 +22,6 @@ export function ToastProvider({ children }) {
     setIsShown(true);
   }
 
-  // 2) Methode, um ihn wieder auszublenden
   function hideToast() {
     setIsShown(false);
     setType("error");
@@ -31,8 +33,6 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={{ showToast, hideToast }}>
       {children}
-
-      {/* 3) Hier wird der Toast gerendert, wenn isShown === true */}
       {isShown && (
         <ToastWrapper>
           <Toast

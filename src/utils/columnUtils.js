@@ -16,10 +16,6 @@ const defaultBreakpoints = [
   
   /**
    * Returns the number of columns that fit in the given width.
-   * 
-   * @param {number} width - The current viewport or container width in pixels.
-   * @param {Array<{maxWidth: number, columns: number}>} breakpoints - Optional custom breakpoints.
-   * @returns {number} - The number of columns.
    */
 export function getColumnCount(width, breakpoints = defaultBreakpoints) {
     if (typeof width !== 'number' || width < 0) {
@@ -39,9 +35,6 @@ export function getColumnCount(width, breakpoints = defaultBreakpoints) {
   /**
    * Helper that reads window.innerWidth automatically.
    * Useful for client-side only contexts.
-   * 
-   * @param {Array<{maxWidth: number, columns: number}>} breakpoints 
-   * @returns {number}
    */
 export function getColumnCountForWindow(breakpoints) {
     if (typeof window === 'undefined') {

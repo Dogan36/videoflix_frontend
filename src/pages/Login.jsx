@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import LoginHeader from "../components/LoginHeader";
 import LoginStart from "../components/LoginStart";
 import LoginForm from "../components/LoginForm";
@@ -12,16 +12,23 @@ import backgroundStart from "@/assets/background-start.webp";
 import backgroundLogin from "@/assets/background-login.webp";
 import backgroundSignup from "@/assets/background-signup.webp";
 
+/**
+ * Login Page Component
+ *
+ * Central authentication page with multiple steps:
+ * - Start view (email input only)
+ * - Login form
+ * - Signup form
+ * - Forgot password form
+ *
+ * Background image changes dynamically based on current step.
+ * Step is controlled via internal state, or optionally via router state.
+ */
 function Login() {
   const { state } = useLocation();
   const [step, setStep] = useState(state?.step || "start");
   const [email, setEmail] = useState("");
-  useEffect(() => {
-    state?.step
-    console.log("👉 location.state:", state);
-    console.log("👉 initial step:", step);
-    console.log("👉 initial email:", email);
-  }, [state, step, email]);
+ 
   const backgroundImage = {
     start: `url(${backgroundStart})`,
     login: `url(${backgroundLogin})`,

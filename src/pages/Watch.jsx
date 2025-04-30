@@ -6,6 +6,15 @@ import styles from "./Watch.module.css";
 import backArrow from "@/assets/arrow_back.svg";
 import logo from "@/assets/logo.svg";
 import { API_BASE_URL } from "@/config";
+
+/**
+ * Watch Component
+ * Renders the video player for a specific movie.
+ * Uses URL parameters to fetch the movie data.
+ *  
+ * URL: /watch/:movieId
+ */
+
 export default function Watch() {
   const navigate = useNavigate();
   const movieId = useParams().movieId
@@ -31,7 +40,6 @@ export default function Watch() {
   useEffect(() => {
     async function fetchMeta() {
       const { ok, data } = await getData(`movies/${movieId}/`);
-      console.log("Meta:", data);
       if (ok) setMovie(data);
       else console.error("Meta‑Error:", data?.message);
     }

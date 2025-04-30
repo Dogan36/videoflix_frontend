@@ -1,10 +1,14 @@
 import styles from "./Toast.module.css";
-import errorIcon from "@/assets/error_icon.svg"; // dein Icon-Pfad
-import successIcon from "@/assets/success_icon.png"; // dein Icon-Pfad
+import errorIcon from "@/assets/error_icon.svg";
+import successIcon from "@/assets/success_icon.png";
+
+/**
+ * Toast component that displays a notification message with an optional action button.
+ * It can be used to show success or error messages to the user.
+ */
 function Toast({ message, buttonText, onAction, onClose, type }) {
     return (
       <div className={styles.toast}>
-      
         <div className={`${styles.redBar} ${styles[type]}`}></div>
         <div className={styles.toastContent}>
         {type === "error" && (

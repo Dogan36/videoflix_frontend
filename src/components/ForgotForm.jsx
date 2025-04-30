@@ -4,8 +4,12 @@ import { useState } from "react";
 import { validateEmail} from "@/utils/formvalidation";
 import { handleForgot } from "../services/authHelpers";
 import { useToast } from "@/contexts/ToastContext";
-function ForgotForm({setStep, email, setEmail}) {
-  
+
+/**
+ * ForgotForm component that handles the password reset process.
+ * It validates the email input and sends a request to the server to initiate the password reset process.
+ */
+function ForgotForm({setStep, email, setEmail}) {  
   const [emailError, setEmailError] = useState();
   const { showToast } = useToast();
 
@@ -39,11 +43,7 @@ function ForgotForm({setStep, email, setEmail}) {
       />
       
       {emailError &&  <div className={styles.errorWrapper}><img src={warning} alt="" /><span>{emailError}</span></div>}
-      
-      
       <button type="submit">Send Email</button>
-      
-      
     </form>
   );
 }

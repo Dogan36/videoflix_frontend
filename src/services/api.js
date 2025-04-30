@@ -1,26 +1,50 @@
 import { API_BASE_URL } from "@/config";
 
+/**
+ * API Utility Functions
+ *  
+ * This module provides utility functions to interact with the backend API.
+ * It includes functions for setting and removing authentication credentials,
+ * fetching data, and handling errors.
+ *  
+ */
+
+/**
+ * Set authentication credentials in local storage.
+ */
+
 export function setAuthCredentials(token, userId) {
     localStorage.setItem('videoflix-auth-token', token);
     localStorage.setItem('videoflix-auth-user-id', userId);
 }
 
+/**
+ * Remove authentication credentials from local storage.
+ */
 export function removeAuthCredentials() {
     localStorage.removeItem('videoflix-auth-token');
     localStorage.removeItem('videoflix-auth-user-id');
 }
 
+/**
+ * Get the authentication token from local storage.
+ */
 export function getAuthToken() {
     return localStorage.getItem('videoflix-auth-token');
 }
 
-
-
+/**
+ * Get the authentication user ID from local storage.
+ * This is used to identify the logged-in user.
+ */
 export function getAuthUserId() {
     return localStorage.getItem('videoflix-auth-user-id');
 }
 
-
+/**
+ * Create headers for API requests.
+ * This includes the authentication token if available.
+ * */
 function createHeaders() {
     const headers = {};
     const token = getAuthToken();
@@ -30,6 +54,10 @@ function createHeaders() {
     return headers;
 }
 
+/**
+ * Get a user-friendly error message based on the error type.
+ * This function checks the type of error and returns a specific message.
+ */
 function getErrorMessage(error) {
     let errorMessage = 'Network error';
 
@@ -43,10 +71,15 @@ function getErrorMessage(error) {
     return errorMessage;
 }
 
+
+/**
+ * Fetch data from the API.
+ * This function takes an endpoint and optional parameters,
+ * constructs the URL, and makes a GET request.
+ * It handles different content types and errors.
+ * */
 export async function getData(endpoint, params = {}) {
-  console.log("GET request to:", endpoint, "with params:", params);
   let url = `${API_BASE_URL}${endpoint}`;
-  console.log("URL:", url);
   if (Object.keys(params).length) {
     const qs = new URLSearchParams(params).toString();
     url += url.includes("?") ? "&" : "?" + qs;
@@ -85,6 +118,12 @@ export async function getData(endpoint, params = {}) {
   }
 }
 
+/**
+ * Post data to the API.
+ * This function takes an endpoint and data object,
+ * constructs the URL, and makes a POST request.
+ * It handles different content types and errors.
+ * */
 export async function postDataWJSON(endpoint, data) {
     let header = createHeaders();
     header['Content-Type'] = 'application/json';
@@ -112,8 +151,12 @@ export async function postDataWJSON(endpoint, data) {
     }
 }
 
-
-
+/**
+ * Post data to the API with FormData.
+ * This function takes an endpoint and data object,
+ * constructs the URL, and makes a POST request.
+ * It handles different content types and errors.
+ * */
 export async function deleteData(endpoint) {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {

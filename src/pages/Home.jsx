@@ -7,6 +7,13 @@ import { getData } from "../services/api";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getColumnCountForWindow } from "@/utils/columnUtils";
 
+/**
+ * Home Component
+ *
+ * Displays the homepage for logged-in users.
+ * Sections: Newest Movies, Continue Watching, Watch Again, and dynamic Categories.
+ * Implements lazy loading and pagination with IntersectionObserver.
+ */
 function Home() {
   const isMobile = window.innerWidth <= 768;
 
@@ -43,19 +50,27 @@ function Home() {
   const [activeMovie, setActiveMovie] = useState(null);
   const [featuredMovie, setFeaturedMovie] = useState(null);
 
+   /**
+   * Resets the active movie selection, used when header logo is clicked
+   */
   const resetActiveMovie = () => setActiveMovie(null);
 
+  /**
+   * Sets the active movie and scrolls to top
+   */
   function updateActiveMovie(movie) {
     setActiveMovie(movie);
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
 
+  /**
+   * Fetches initial movie data for homepage sections and configures pagination state
+   */
   useEffect(() => {
     async function loadMovies() {
       const columns = getColumnCountForWindow();
       try {
         const res = await getData("movies/home/", { page_size: columns });
-        console.log("Home movies:", res.data);
         if (res.ok) {
           // Newest
           setNewest(res.data.newest.results || []);
@@ -137,11 +152,6 @@ function Home() {
   }, [hasMoreNewest, isLoadingNewest, newestPage]);
 
   const loadMoreRecentlyWatched = useCallback(async () => {
-    console.log(
-      "LoadMore RW:",
-      hasMoreRecentlyWatched,
-      isLoadingRecentlyWatched
-    );
     if (!hasMoreRecentlyWatched || isLoadingRecentlyWatched) return;
     setIsLoadingRecentlyWatched(true);
     const columns = getColumnCountForWindow();
@@ -224,6 +234,15 @@ function Home() {
     [hasMoreCategory, isLoadingCategory, categoryPages]
   );
 
+  /**
+   * Fetches the next page of movies for a specific section or category on scroll
+   * Individual handlers: loadMoreNewest, loadMoreRecentlyWatched, loadMoreFinished, loadMoreCategory
+   */
+
+  /**
+   * Sets up IntersectionObserver for lazy loading each section
+   * Disconnects observers on cleanup
+   */
   useEffect(() => {
     const observers = [];
 
@@ -232,15 +251,7 @@ function Home() {
       if (!element) return;
       const obs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          // Logge, was gemessen wird
-          console.log(`📦 Beobachte:`, entry.target);
-          console.log(`🧐 isIntersecting:`, entry.isIntersecting);
-          console.log(`📏 intersectionRatio:`, entry.intersectionRatio);
-          console.log(`📐 target boundingClientRect:`, entry.boundingClientRect);
-          console.log(`📐 rootBounds (Container):`, entry.rootBounds);
-      
           if (entry.isIntersecting && entry.intersectionRatio > 0) {
-            console.log(`🚀 Lade Nach:`, entry.target);
             loadMoreFn();
             obs.unobserve(entry.target);
           }
@@ -256,11 +267,6 @@ function Home() {
 
     // Newest
     if (hasMoreNewest && !isLoadingNewest) {
-      if (newestRef.current) {
-        console.log("Observing newestRef:", newestRef.current);
-      } else {
-        console.log("newestRef.current is undefined");
-      }
       observe(newestRef.current, loadMoreNewest);
     }
     // Continue Watching

@@ -3,11 +3,23 @@ import { useEffect, useState } from "react";
 import { getData } from "@/services/api"; 
 import LoginHeader from "../components/LoginHeader";
 
+/**
+ * ActivationPage Component
+ * Renders the account activation status after the user clicks
+ * the activation link sent via email. Uses URL parameters to
+ * validate the user.
+ *
+ * URL: /activate/:uid/:token
+ */
 function ActivationPage() {
   const { uid, token } = useParams();
   const [status, setStatus] = useState("loading");
 
   useEffect(() => {
+     /**
+     * Attempts to activate the user account by calling the backend endpoint.
+     * On success, status is set to 'success'; on failure or exception, 'error'.
+     */
     const activate = async () => {
       try {
         const res = await getData(`/users/activate/${uid}/${token}/`);

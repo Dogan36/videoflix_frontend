@@ -3,6 +3,13 @@ import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import styles from "./VideoPlayer.module.css";
 import { postDataWJSON } from "@/services/api";
+
+/**
+ * VideoPlayer component that handles the video playback and controls.
+ * It includes features like play/pause, mute/unmute, volume control,
+ * progress tracking, resolution change, and fullscreen toggle.
+ * It also handles the resume prompt if the user has previously watched the video.
+ */
 export default function VideoPlayer({
   videoUrl,
   title,
@@ -18,7 +25,6 @@ export default function VideoPlayer({
   const playerRef = useRef();
   const wrapperRef = useRef();
 
-  // Für das Merken der Position und des Play‑Status
   const savedPositionRef = useRef(0);
   const savedPlayingRef = useRef(false);
   const [pendingSeek, setPendingSeek] = useState(false);
@@ -26,27 +32,19 @@ export default function VideoPlayer({
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [initialSeek, setInitialSeek] = useState(0);
 
-  // Player‑States
   const [playing, setPlaying] = useState(autostart);
   const [muted, setMuted] = useState(true);
 
   const [volume, setVolume] = useState(0);
   const prevVolumeRef = useRef(volume);
 
-  // Slider‑Anzeige beim Mute‑Hover
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
-  // Progress & Duration
   const [playedFraction, setPlayedFraction] = useState(0);
   const [playedSeconds, setPlayedSeconds] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  // Fullscreen
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  // --------------------
-  //  Event‑Handler
-  // --------------------
 
   const togglePlay = () => setPlaying((p) => !p);
   const toggleMute = () => {
@@ -77,7 +75,6 @@ export default function VideoPlayer({
   };
 
   const handleReady = () => {
-    // Wenn wir gerade nach einer Auflösungs‑Änderung seeken müssen:
     if (pendingSeek && playerRef.current) {
       playerRef.current.seekTo(savedPositionRef.current, "seconds");
       setPlaying(savedPlayingRef.current);
@@ -91,7 +88,6 @@ export default function VideoPlayer({
     setPlayedFraction(frac);
   };
 
-  // Auflösungs‑Wechsel: erst Zeit & Status merken, dann parent callback aufrufen
   const handleResolutionChangeLocal = (e) => {
     const newRes = parseInt(e.target.value, 10);
     if (playerRef.current) {
@@ -102,7 +98,7 @@ export default function VideoPlayer({
     setPendingSeek(true);
   };
 
-  // Fullscreen‑Toggle
+
   const toggleFullscreen = () => {
     if (!isFullscreen) wrapperRef.current.requestFullscreen?.();
     else document.exitFullscreen?.();
@@ -121,7 +117,6 @@ export default function VideoPlayer({
   };
 
   useEffect(() => {
-    console.log(savedProgress, finished);
     if (savedProgress > 3 && !finished) {
       setPlaying(false);
       setInitialSeek(savedProgress);

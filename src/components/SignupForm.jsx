@@ -11,11 +11,12 @@ import {
 import { handleRegistration } from "../services/authHelpers";
 import { useToast } from "@/contexts/ToastContext";
 
-export default function SignupForm({
-  setStep,
-  email,
-  setEmail
-}) {
+/**
+ * SignupForm component that handles the signup process.
+ * It validates the email, password, and password repeat inputs and sends a request to the server to register the user.
+ * It also handles the display of error messages and the visibility of the password inputs.
+ */
+export default function SignupForm({ setStep, email, setEmail }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
@@ -43,15 +44,15 @@ export default function SignupForm({
       email,
       password,
       passwordRepeat,
-      setStep
+      setStep,
     });
     if (res.ok) {
       showToast({
         type: "success",
-        message: "Successfully registered. Please check your email to activate your account.",
+        message:
+          "Successfully registered. Please check your email to activate your account.",
       });
-    }
-    else if (res.status === 400) {
+    } else if (res.status === 400) {
       showToast({
         type: "error",
         message: `${res.data.detail}`,
@@ -61,8 +62,9 @@ export default function SignupForm({
         type: "error",
         message: "Unknown error. Try again later",
       });
-    } 
+    }
   };
+  
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
       <span className="formHeader">Sign Up</span>
@@ -130,4 +132,3 @@ export default function SignupForm({
     </form>
   );
 }
-
