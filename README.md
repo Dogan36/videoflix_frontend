@@ -4,6 +4,10 @@
 
 **Videoflix Frontend** is the client‑side React application that consumes the Videoflix Backend APIs, built as part of the Full‑Stack training at Developer Academy. It provides a modern UI for browsing, streaming, and tracking movie progress.
 
+# Backend
+
+You can find the Backend Repository for this project at https://github.com/Dogan36/videoflix-backend.git
+
 ## Features
 
 - **Responsive Design**: Mobile‑friendly layout, adaptive video player controls, auto‑hide header.
@@ -27,8 +31,7 @@ frontend/
 │   ├── assets/         # Images, icons, styles
 │   ├── App.jsx         # App component with routes
 │   └── index.jsx       # App bootstrap (ToastProvider, ReactDOM.render)
-├── public/             # Static files (favicon, index.html)
-├── .env                # Environment variables (REACT_APP_API_URL)
+├── public/             # Static files (favicon)
 ├── package.json        # NPM scripts and dependencies
 └── README.md           # This file
 ```
@@ -37,22 +40,18 @@ frontend/
 
 1. **Clone the repo:**
    ```bash
-   git clone https://github.com/your-org/videoflix-frontend.git
+   git clone https://github.com/Dogan36/videoflix-frontend.git
    cd videoflix-frontend
    ```
 2. **Install dependencies:**
    ```bash
    npm install
    ```
-3. **Configure environment variables** in `.env` (e.g. `REACT_APP_API_URL=http://localhost:8000/`).
-4. **Start the dev server:**
+3. **Start the dev server:**
    ```bash
    npm run dev
    ```
-5. **Build for production:**
-   ```bash
-   npm run build
-   ```
+
 
 
 📄 License
