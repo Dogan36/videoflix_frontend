@@ -4,7 +4,7 @@
 
 **Videoflix Frontend** is the client‑side React application that consumes the Videoflix Backend APIs, built as part of the Full‑Stack training at Developer Academy. It provides a modern UI for browsing, streaming, and tracking movie progress.
 
-# Backend
+## Backend
 
 You can find the Backend Repository for this project at https://github.com/Dogan36/videoflix-backend.git
 
