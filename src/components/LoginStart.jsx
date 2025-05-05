@@ -21,7 +21,7 @@ function LoginStart({ setStep, email, setEmail }) {
     }
 
     try {
-      const res = await postDataWJSON("/users/check-email/", { email });
+      const res = await postDataWJSON("users/check-email/", { email });
       if (res.ok) {
         setStep(res.data.exists ? "login" : "signup");
       } else {

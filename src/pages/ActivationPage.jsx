@@ -22,7 +22,7 @@ function ActivationPage() {
      */
     const activate = async () => {
       try {
-        const res = await getData(`/users/activate/${uid}/${token}/`);
+        const res = await getData(`users/activate/${uid}/${token}/`);
         if (res.ok) {
           setStatus("success");
         } else {
