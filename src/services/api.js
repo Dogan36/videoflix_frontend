@@ -127,29 +127,48 @@ export async function getData(endpoint, params = {}) {
 export async function postDataWJSON(endpoint, data) {
     let header = createHeaders();
     header['Content-Type'] = 'application/json';
+
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'POST',
             headers: header,
             body: JSON.stringify(data)
         });
-        
-        const responseData = await response.json();
+
+        let responseData = null;
+        try {
+            responseData = await response.json();
+        } catch (jsonError) {
+            console.error('❗ JSON parse error:', jsonError);
+            // Wenn keine JSON-Antwort kommt, loggen wir nur den Text
+            const text = await response.text();
+            console.error('❗ Raw response text:', text);
+            responseData = text;
+        }
+
+        if (!response.ok) {
+            console.error('❗ Server returned error status:', response.status);
+            console.error('❗ Server error details:', responseData);
+        }
+
         return {
             ok: response.ok,
             status: response.status,
             data: responseData
         };
-        
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
+
+    } catch (networkError) {
+        console.error('❗ Network or Fetch error:', networkError);
+
         return {
-            ok:false,
+            ok: false,
             status: 'error',
-            message: errorMessage
+            message: networkError.message || 'Unknown network error',
+            error: networkError
         };
     }
 }
+
 
 /**
  * Post data to the API with FormData.

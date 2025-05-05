@@ -26,7 +26,7 @@ function ForgotForm({setStep, email, setEmail}) {
     else if (res.status === 400) {
       showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Sign Up", buttonAction: () => setStep("signup") });
     } else {
-      console.error(res);
+      
       showToast({ type: "error", message: "Unknown error. Please try again later" });
     }
   };
