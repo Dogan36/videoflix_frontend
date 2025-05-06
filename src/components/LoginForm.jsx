@@ -49,7 +49,7 @@ export default function LoginForm({
       setAuthCredentials(res.data.token, res.data.user_id);
       navigate("/");
     } else if (res.status === 401) {
-      showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Resend", buttonAction: () => resendActivation(email) });
+      showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Resend", buttonAction: () => handleResend() });
     } else if (res.status === 400) {
       showToast({ type: "error", message: `${res.data.detail}`, buttonText: "Reset", buttonAction: () => setStep("forgot") });
     } else {
@@ -57,6 +57,20 @@ export default function LoginForm({
     }
   };
 
+  const handleResend = async () => {
+    const res = await resendActivation(email);
+    if (res.ok) {
+      showToast({
+        type: "success",
+        message: "Activation email resent. Please check your inbox.",
+      });
+    } else {
+      showToast({
+        type: "error",
+        message: "Failed to resend activation email. Please try again.",
+      });
+    }
+  }
   return (
     <form className={styles.container} onSubmit={handleSubmit} noValidate>
       <span className="formHeader">Log In</span>

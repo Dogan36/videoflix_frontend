@@ -51,6 +51,10 @@ export default function SignupForm({ setStep, email, setEmail }) {
         type: "success",
         message:
           "Successfully registered. Please check your email to activate your account.",
+        buttonText: "Login",
+        buttonAction: () => {
+          setStep("login");
+        },
       });
     } else if (res.status === 400) {
       showToast({
