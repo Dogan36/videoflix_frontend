@@ -47,6 +47,8 @@ export default function SignupForm({ setStep, email, setEmail }) {
       setStep,
     });
     if (res.ok) {
+      setPassword("");
+      setPasswordRepeat("");
       showToast({
         type: "success",
         message:
