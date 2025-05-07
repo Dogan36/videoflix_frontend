@@ -102,3 +102,33 @@
   z-index: 3;
   gap: 20px;
 }
+
+@media screen and (max-width: 500px) {
+  
+
+ 
+  .controlBar {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0.5rem;
+  }
+
+  .progress {
+    order: 2;
+    flex-basis: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .controlButton,
+  .resolutionSelect,
+  .timeDisplay,
+  .volumeControl {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .volumeSlider{
+    margin-bottom: 1rem;
+    left:49%
+  }
+}

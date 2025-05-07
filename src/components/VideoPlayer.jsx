@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import styles from "./VideoPlayer.module.css";
 import { postDataWJSON } from "@/services/api";
-
+import ResolutionDropdown from "@/components/ResolutionDropdown";
 /**
  * VideoPlayer component that handles the video playback and controls.
  * It includes features like play/pause, mute/unmute, volume control,
@@ -20,7 +20,7 @@ export default function VideoPlayer({
   autostart = true,
   savedProgress,
   movieId,
-  finished
+  finished,
 }) {
   const playerRef = useRef();
   const wrapperRef = useRef();
@@ -88,16 +88,15 @@ export default function VideoPlayer({
     setPlayedFraction(frac);
   };
 
-  const handleResolutionChangeLocal = (e) => {
-    const newRes = parseInt(e.target.value, 10);
+  const handleResolutionChangeLocal = (newRes) => {
+    const parsedRes = parseInt(newRes, 10);
     if (playerRef.current) {
       savedPositionRef.current = playerRef.current.getCurrentTime();
       savedPlayingRef.current = playing;
     }
-    onResolutionChange(newRes);
+    onResolutionChange(parsedRes);
     setPendingSeek(true);
-  };
-
+};
 
   const toggleFullscreen = () => {
     if (!isFullscreen) wrapperRef.current.requestFullscreen?.();
@@ -132,11 +131,11 @@ export default function VideoPlayer({
     if (playerRef.current) {
       interval = setInterval(async () => {
         const current = Math.floor(playerRef.current.getCurrentTime());
-        const atEnd = current +1 >= duration
-        await postDataWJSON('movies/progress/update/', {
+        const atEnd = current + 1 >= duration;
+        await postDataWJSON("movies/progress/update/", {
           movie_id: movieId,
           progressInSeconds: current,
-          finished: atEnd
+          finished: atEnd,
         });
       }, 3000);
     }
@@ -235,17 +234,11 @@ export default function VideoPlayer({
           </span>
 
           {/* Resolution Dropdown */}
-          <select
-            className={styles.resolutionSelect}
-            value={currentResolution}
-            onChange={handleResolutionChangeLocal}
-          >
-            {availableResolutions.map((res) => (
-              <option key={res} value={res}>
-                {res}p
-              </option>
-            ))}
-          </select>
+          <ResolutionDropdown
+            availableResolutions={availableResolutions}
+            currentResolution={currentResolution}
+            onResolutionChange={handleResolutionChangeLocal}
+          />
 
           {/* Fullscreen */}
           <button onClick={toggleFullscreen} className={styles.controlButton}>
