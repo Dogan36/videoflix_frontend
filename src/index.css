@@ -57,7 +57,7 @@ h1 {
 }
 
 button {
-  background: var(--primary-color, #2E3EDF); /* Standard: Blau */
+  background: var(--primary-color); /* Standard: Blau */
   color: var(--text-color, #ffffff); /* Weißer Text */
   padding: 12px 24px;
   border: none;
@@ -122,8 +122,5 @@ input {
   }
   a:hover {
     color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
   }
 }
